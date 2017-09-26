@@ -1,4 +1,3 @@
-import * as path  from 'path'
 import {
   log,
 }                 from './config'
@@ -16,11 +15,11 @@ export class Bot {
     log.verbose('Bot', 'run()')
 
     wechaty
-    .on('scan',     path.resolve(__dirname, './listeners/scan'))
-    .on('logout',   path.resolve(__dirname, './listeners/logout'))
-    .on('error',    path.resolve(__dirname, './listeners/error'))
-    .on('login',    path.resolve(__dirname, './listeners/login'))
-    .on('message',  path.resolve(__dirname, './listeners/message'))
+    .on('scan',     './listeners/scan')
+    .on('logout',   './listeners/logout')
+    .on('error',    './listeners/error')
+    .on('login',    './listeners/login')
+    .on('message',  './listeners/message')
 
     log.info('Bot', 'run() blinder is initializing... please wait(20-200s)...')
     await blinder.init()
