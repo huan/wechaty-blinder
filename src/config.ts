@@ -1,1 +1,1 @@
-export { log } from 'wechaty'
+export { log } from 'brolog'

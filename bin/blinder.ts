@@ -1,4 +1,11 @@
 import {
+  log as logWechaty,
+}                     from 'wechaty'
+import {
+  log as logHotImport,
+}                     from 'wechaty/node_modules/hot-import/'
+
+import {
   log,
 }         from '../src/config'
 import {
@@ -6,6 +13,8 @@ import {
 }         from '../src/bot'
 
 async function main(): Promise<number> {
+  logWechaty.level('verbose')
+  logHotImport.level('verbose')
   log.level('verbose')
   log.verbose('Main', 'main()')
 
