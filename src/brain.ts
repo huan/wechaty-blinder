@@ -5,14 +5,14 @@ import {
 import blinder    from './blinder'
 import wechaty    from './wechaty'
 
-export class Bot {
+export class Brain {
 
   constructor() {
-    log.verbose('Bot', 'constructor()')
+    log.verbose('Brain', 'constructor()')
   }
 
-  public async run(): Promise<void> {
-    log.verbose('Bot', 'run()')
+  public async start(): Promise<void> {
+    log.verbose('Brain', 'run()')
 
     wechaty
     .on('scan',     './listeners/scan')
@@ -21,9 +21,9 @@ export class Bot {
     .on('login',    './listeners/login')
     .on('message',  './listeners/message')
 
-    log.info('Bot', 'run() blinder is initializing... please wait(20-200s)...')
+    log.info('Brain', 'run() blinder is initializing... please wait(20-200s)...')
     await blinder.init()
-    log.info('Bot', 'run() blinder initialized')
+    log.info('Brain', 'run() blinder initialized')
 
     await wechaty.init()
 
@@ -33,7 +33,7 @@ export class Bot {
     })
   }
 
-  public async quit(): Promise<void> {
+  public async stop(): Promise<void> {
     await wechaty.quit()
   }
 }

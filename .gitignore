@@ -62,3 +62,4 @@ t.*
 /t/
 /blinder.data/
 /*.wechaty.json
+/data/
