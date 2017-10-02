@@ -60,6 +60,6 @@ typings/
 package-lock.json
 t.*
 /t/
-/blinder.data/
+/face-blinder.workdir/
 /*.wechaty.json
-/data/
+/workdir/
