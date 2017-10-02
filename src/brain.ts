@@ -21,7 +21,7 @@ export class Brain {
     .on('login',    './listeners/login')
     .on('message',  './listeners/message')
 
-    log.info('Brain', 'run() blinder is initializing... please wait(20-200s)...')
+    log.info('Brain', 'run() blinder is initializing... please wait... (about 20 to 200 seconds)')
     await blinder.init()
     log.info('Brain', 'run() blinder initialized')
 

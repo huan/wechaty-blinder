@@ -2,6 +2,9 @@ import * as fs    from 'fs'
 import * as path  from 'path'
 
 import {
+  path as APP_ROOT,
+}                   from 'app-root-path'
+import {
   Contact,
   MediaMessage,
   Message,
@@ -10,8 +13,11 @@ import {
   Wechaty,
 }                   from 'wechaty'
 import {
-  path as APP_ROOT,
-}                   from 'app-root-path'
+  createCanvas,
+  Face,
+  resizeImage,
+  saveImage,
+}                   from 'face-blinder'
 
 import {
   log,
@@ -88,7 +94,7 @@ async function onImage(
       break
     }
     await message.say(`Similar faces of ${faceList[i].md5}:`)
-    await Wechaty.sleep(500)
+    await Wechaty.sleep(1000)
 
     const similarFaceList = await blinder.similar(faceList[i])
     if (!similarFaceList.length) {
@@ -96,26 +102,35 @@ async function onImage(
       continue
     }
 
-    for (let j = 0; j < similarFaceList.length; j++) {
-      if (j > 1) {
-        break
-      }
-      const faceFile = blinder.file(similarFaceList[j])
-      await message.say(new MediaMessage(faceFile))
+    const filePath = path.join(
+      dataDirectory(),
+      (Math.random() + Math.random()).toString(36).substr(2) + '.png',
+    )
 
-      const confidence = (similarFaceList[j].confidence || 0).toFixed(2)
-      const distance   = faceList[i].distance(similarFaceList[j]).toFixed(2)
+    await collages([faceList[i], ...similarFaceList], filePath)
 
-      const roger = [
-        '^',
-        `Confidence: ${confidence}`,
-        `Distance: ${distance}`,
-      ].join('\n')
+    await message.say(new MediaMessage(filePath))
+    await Wechaty.sleep(1000)
 
-      await message.say(roger)
-      await Wechaty.sleep(500)
-      // await message.say(faceFile)
-    }
+    // for (let j = 0; j < similarFaceList.length; j++) {
+    //   if (j > 1) {
+    //     break
+    //   }
+    //   const faceFile = blinder.file(similarFaceList[j])
+    //   await message.say(new MediaMessage(faceFile))
+
+    //   const confidence = (similarFaceList[j].confidence || 0).toFixed(2)
+    //   const distance   = faceList[i].distance(similarFaceList[j]).toFixed(2)
+
+    //   const roger = [
+    //     '^',
+    //     `Confidence: ${confidence}`,
+    //     `Distance: ${distance}`,
+    //   ].join('\n')
+
+    //   await message.say(roger)
+    //   await Wechaty.sleep(500)
+    // }
   }
 }
 
@@ -209,4 +224,47 @@ function dataDirectory() {
     fs.mkdirSync(dataDir)
   }
   return dataDir
+}
+
+async function collages(faceList: Face[], file: string): Promise<void>{
+  const SIZE = 160
+
+  const profileFace = faceList.shift()
+  if (!profileFace) {
+    throw new Error('should return a blank picture for no face')
+  }
+
+  const width = SIZE * 3
+  const height = SIZE * (1 + Math.ceil((faceList.length - 1) / 3))
+
+  const canvas = createCanvas(width, height)
+  const ctx    = canvas.getContext('2d')
+  if (!ctx) {
+    throw new Error('getContext found null')
+  }
+
+  let imageData = profileFace.imageData
+  if (imageData.width !== SIZE) {
+    imageData = await resizeImage(imageData, SIZE, SIZE)
+  }
+  ctx.putImageData(imageData, 0, 0)
+
+  let row, col
+  for (let i = 0; i < faceList.length; i++) {
+    row = Math.floor(i / 3)
+    col = i % 3
+
+    imageData = faceList[i].imageData
+    if (imageData.width !== SIZE) {
+      imageData = await resizeImage(imageData, SIZE, SIZE)
+    }
+    ctx.putImageData(
+      imageData,
+      col * SIZE,
+      (row + 1) * SIZE,
+    )
+  }
+
+  imageData = ctx.getImageData(0, 0, width, height)
+  await saveImage(imageData, file)
 }
