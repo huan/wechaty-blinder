@@ -1,0 +1,1 @@
+FROM zixia/wechaty:onbuild
