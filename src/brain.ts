@@ -12,7 +12,7 @@ export class Brain {
   }
 
   public async start(): Promise<void> {
-    log.verbose('Brain', 'run()')
+    log.verbose('Brain', 'start()')
 
     wechaty
     .on('scan',     './listeners/scan')
@@ -21,9 +21,11 @@ export class Brain {
     .on('login',    './listeners/login')
     .on('message',  './listeners/message')
 
-    log.info('Brain', 'run() blinder is initializing... please wait... (need 20 to 200 seconds to initialize)')
+    log.info('Brain', 'start() blinder is initializing... please wait... (need 20 to 200 seconds to finish initializing)')
+    const timeStart = Date.now()
     await blinder.init()
-    log.info('Brain', 'run() blinder initialized')
+    const duration = (Date.now() - timeStart) / 1000
+    log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
     await wechaty.init()
 

@@ -3,7 +3,7 @@
 // }                     from 'wechaty'
 import {
   log as logHotImport,
-}                     from 'wechaty/node_modules/hot-import/'
+}                     from 'hot-import'
 
 import {
   log,
