@@ -28,13 +28,18 @@ export = async function (
   this    : Wechaty,
   message : Message | MediaMessage,
 ): Promise<void> {
+  
   const room    = message.room()
   const sender  = message.from()
-  const content = message.content()
+  
+  const info = (message instanceof MediaMessage)
+              ? `MediaMessage(${message.filename()})`
+              : message.content()
+              
   log.info('Listener', '(message) %s%s:"%s"',
                         sender,
                         room ? `@[${room.topic()}]` : '',
-                        content,
+                        info,
           )
 
   if (room) {
@@ -198,7 +203,7 @@ async function onRoomLearnMessage(
     }
   }
   const roger = `learned # ${room.memberList().length} contacts in room ${room.topic()}`
-  await this.say(roger)
+  await message.from().say(roger)
   // FIXME: use a queue
   await Wechaty.sleep(500)
 }
