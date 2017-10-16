@@ -22,6 +22,30 @@ import {
 }               from '../config'
 import blinder  from '../blinder'
 
+class Heater {
+  private lastHeatTime = -1
+  
+  constructor(
+    public coolingDownTime = 60 * 1000
+  ) {
+    log.verbose('Heater', 'constructor(%d)', coolingDownTime)
+  }
+  
+  public heat(): void {
+    log.verbose('Heater', 'heat()')
+    this.lastHeatTime = Date.now()
+  }
+  
+  public overheat(): boolean {
+    const duration = Date.now() - this.lastHeatTime
+    const tooHot = duration < this.coolingDownTime
+    log.verbose('Heater', 'overheat(): %s', tooHot)
+    return tooHot
+  }
+}
+
+const heater = new Heater(10 * 1000)
+
 export = async function (
   this    : Wechaty,
   message : Message | MediaMessage,
@@ -124,7 +148,8 @@ async function onMediaMessage(
   const topic = room.topic()
   if (  /facenet/i.test(topic)
       && message.type() === MsgType.IMAGE
-      && !message.self()
+      // && !message.self()
+      && !heater.overheat()
   ) {
     const absFilePath = await mediaFile(message)
     await onImage.call(this, absFilePath, message)
@@ -167,6 +192,7 @@ async function onImage(
 
     await collages([faceList[i], ...similarFaceList], filePath)
 
+    heater.heat()
     await message.say(new MediaMessage(filePath))
     await Wechaty.sleep(1000)
 
