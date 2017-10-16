@@ -1,10 +1,9 @@
 // import {
 //   log as logWechaty,
 // }                     from 'wechaty'
-import {
-  log as logHotImport,
-}                     from 'hot-import'
-
+// import {
+//   log as logHotImport,
+// }                       from 'hot-import'
 import {
   log,
 }         from '../src/config'
@@ -14,7 +13,7 @@ import {
 
 async function main(): Promise<number> {
   // logWechaty.level('verbose')
-  logHotImport.level('verbose')
+  // logHotImport.level('verbose')
   log.level('verbose')
   log.verbose('Main', 'main()')
 

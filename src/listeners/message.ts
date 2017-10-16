@@ -24,18 +24,18 @@ import blinder  from '../blinder'
 
 class Heater {
   private lastHeatTime = -1
-  
+
   constructor(
     public coolingDownTime = 60 * 1000
   ) {
     log.verbose('Heater', 'constructor(%d)', coolingDownTime)
   }
-  
+
   public heat(): void {
     log.verbose('Heater', 'heat()')
     this.lastHeatTime = Date.now()
   }
-  
+
   public overheat(): boolean {
     const duration = Date.now() - this.lastHeatTime
     const tooHot = duration < this.coolingDownTime
