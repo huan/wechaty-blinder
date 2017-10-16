@@ -2,9 +2,6 @@ import * as fs    from 'fs'
 import * as path  from 'path'
 
 import {
-  path as APP_ROOT,
-}                   from 'app-root-path'
-import {
   Contact,
   MediaMessage,
   Message,
@@ -21,6 +18,7 @@ import {
 
 import {
   log,
+  WORKDIR,
 }               from '../config'
 import blinder  from '../blinder'
 
@@ -28,18 +26,18 @@ export = async function (
   this    : Wechaty,
   message : Message | MediaMessage,
 ): Promise<void> {
-  
+
   const room    = message.room()
   const sender  = message.from()
-  
-  const info = (message instanceof MediaMessage)
-              ? `MediaMessage(${message.filename()})`
-              : message.content()
-              
-  log.info('Listener', '(message) %s%s:"%s"',
+
+  // const info = (message instanceof MediaMessage)
+  //             ? `MediaMessage(${message.filename()})`
+  //             : message.content()
+
+  log.info('Listener', '(message) %s%s:%s',
                         sender,
-                        room ? `@[${room.topic()}]` : '',
-                        info,
+                        room ? room : '',
+                        message,
           )
 
   if (room) {
@@ -57,7 +55,10 @@ async function onRoomMessage(
   room    : Room,
   message : Message | MediaMessage,
 ): Promise<void> {
+  log.verbose('Listener', '(message) onRoomMessage(%s, %s)', room, message)
+  // console.log(message instanceof MediaMessage)
   if (message instanceof MediaMessage) {
+    // console.log('???')
     return onMediaMessage.call(this, room, message)
   } else {  // message instance of Message
     const content = message.content()
@@ -122,6 +123,8 @@ async function onMediaMessage(
   room    : Room,
   message : MediaMessage,
 ): Promise<void> {
+  log.verbose('Listener', '(message) onMediaMessage(%s)', message)
+
   const topic = room.topic()
   if (  /facenet/i.test(topic)
       && message.type() === MsgType.IMAGE
@@ -137,6 +140,8 @@ async function onImage(
   absFilePath : string,
   message     : MediaMessage,
 ): Promise<void> {
+  log.verbose('Listener', '(message) onImage(%s, %s)', absFilePath, message)
+
   const faceList = await blinder.see(absFilePath)
 
   if (!faceList.length) {
@@ -144,8 +149,10 @@ async function onImage(
     return
   }
 
+  log.verbose('Listener', '(message) onImage() blinder.see() got %d faces', faceList.length)
+
   for (let i = 0; i < faceList.length; i++) {
-    if (i > 10) {
+    if (i > 3) {
       break
     }
     // await message.say(`Similar faces of ${faceList[i].md5}:`)
@@ -158,7 +165,7 @@ async function onImage(
     }
 
     const filePath = path.join(
-      workDirectory(),
+      WORKDIR,
       (Math.random() + Math.random()).toString(36).substr(2) + '.png',
     )
 
@@ -194,6 +201,8 @@ async function onRoomLearnMessage(
   room    : Room,
   message : Message,
 ): Promise<void> {
+  log.verbose('Listener', '(message) onRoomLearnMessage(%s)', room)
+
   for (const contact of room.memberList()) {
     const file = await avatarFile(contact)
     const name = contact.name()
@@ -212,7 +221,7 @@ async function mediaFile(message: MediaMessage): Promise<string> {
   log.verbose('Listener', '(message) mediaFile(%s)', message.filename())
 
   const filePath = path.join(
-    workDirectory(),
+    WORKDIR,
     message.filename(),
   )
   log.silly('Listener', '(message) mediaFile() ' + filePath)
@@ -232,7 +241,7 @@ async function avatarFile(contact: Contact): Promise<string> {
   log.verbose('Listener', '(message) avatarFile(%s)', name)
 
   const filePath = path.join(
-    workDirectory(),
+    WORKDIR,
     `${name}.jpg`,
   )
   const avatarReadStream = await contact.avatar()
@@ -270,18 +279,9 @@ async function saveStream(stream: NodeJS.ReadableStream, file: string, options?:
   })
 }
 
-function workDirectory() {
-  const workdir = path.join(
-    APP_ROOT,
-    'workdir',
-  )
-  if (!fs.existsSync(workdir)) {
-    fs.mkdirSync(workdir)
-  }
-  return workdir
-}
-
 async function collages(faceList: Face[], file: string): Promise<void> {
+  log.verbose('Listener', '(message) collages(faceList.length=%d, %s)',
+                          faceList.length, file)
   const SIZE    = 160
   const PADDING = 20
 
@@ -291,7 +291,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   }
 
   const width = SIZE * 3
-  const height = (SIZE + PADDING) * (1 + Math.ceil((faceList.length - 1) / 3))
+  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3))
 
   /**
    * Init Canvas
