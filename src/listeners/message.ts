@@ -26,7 +26,7 @@ class Heater {
   private lastHeatTime = -1
 
   constructor(
-    public coolingDownTime = 60 * 1000
+    public coolingDownTime = 60 * 1000,
   ) {
     log.verbose('Heater', 'constructor(%d)', coolingDownTime)
   }
