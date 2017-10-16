@@ -21,6 +21,8 @@ if (token) {
     log.error('Wechaty', 'IoClient.init() exception: %s', e)
     wechaty.emit('error', e)
   })
+} else {
+  log.verbose('Wechaty', 'TOKEN: N/A')
 }
 
 export default wechaty
