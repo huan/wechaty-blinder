@@ -1,13 +1,26 @@
+import * as path  from 'path'
+
 import {
   FaceBlinder,
 }                 from 'face-blinder'
-const finis  = require('finis')
+const finis       = require('finis')
 
-export const blinder = new FaceBlinder()
+import {
+  log,
+  WORKDIR,
+}                 from './config'
 
-finis((code, signal, error) => {
-  blinder.quit()
-  console.log(`finis(${code}, ${signal}, ${error})`)
+const workdir = path.join(
+  WORKDIR,
+  'face-blinder',
+)
+export const blinder = new FaceBlinder({
+  workdir,
+})
+
+finis(async (code, signal, error) => {
+  await blinder.quit()
+  log.verbose('Blinder', `finis(${code}, ${signal}, ${error})`)
 })
 
 export default blinder

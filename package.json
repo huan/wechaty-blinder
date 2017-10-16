@@ -1,6 +1,6 @@
 {
   "name": "wechaty-blinder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Face Blinder Bot Powered by Wechaty",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,7 @@
   "dependencies": {
     "app-root-path": "^2.0.1",
     "face-blinder": "^0.0.12",
-    "finis": "^0.0.3",
+    "finis": "0.0.3",
     "qrcode-terminal": "^0.11.0",
     "wechaty": "^0.10.6"
   }
