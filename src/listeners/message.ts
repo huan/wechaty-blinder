@@ -34,9 +34,9 @@ export = async function (
   
   const info = (message instanceof MediaMessage)
               ? `MediaMessage(${message.filename()})`
-              : message.content()
+              : `Message(${message.content()})`
               
-  log.info('Listener', '(message) %s%s:"%s"',
+  log.info('Listener', '(message) %s%s:%s',
                         sender,
                         room ? `@[${room.topic()}]` : '',
                         info,
