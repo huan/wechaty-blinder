@@ -39,7 +39,7 @@ class Heater {
   public overheat(): boolean {
     const duration = Date.now() - this.lastHeatTime
     const tooHot = duration < this.coolingDownTime
-    log.verbose('Heater', 'overheat(): %s', tooHot)
+    log.verbose('Heater', 'overheat() -> %s', tooHot)
     return tooHot
   }
 }
