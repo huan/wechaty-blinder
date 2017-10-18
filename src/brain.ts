@@ -31,7 +31,7 @@ export class Brain {
       wechaty.on('stop', resolve)
       wechaty.on('error', reject)
     })
-  
+
     await wechaty.start()
     await runner
   }
