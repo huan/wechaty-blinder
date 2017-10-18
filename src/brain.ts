@@ -27,15 +27,16 @@ export class Brain {
     const duration = (Date.now() - timeStart) / 1000
     log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
-    await wechaty.init()
-
-    await new Promise<void>((resolve, reject) => {
-      wechaty.on('logout', () => resolve())
+    const runner = new Promise<void>((resolve, reject) => {
+      wechaty.on('stop', resolve)
       wechaty.on('error', reject)
     })
+    
+    await wechaty.start()
+    await runner
   }
 
   public async stop(): Promise<void> {
-    await wechaty.quit()
+    await wechaty.stop()
   }
 }

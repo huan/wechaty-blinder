@@ -6,5 +6,5 @@ import {
 }           from '../config'
 
 export = function (user: Contact) {
-  log.info('Bot', `${user.name()} logouted`)
+  log.info('Bot', `${user} logouted`)
 }
