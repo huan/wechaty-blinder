@@ -1,8 +1,14 @@
 FROM zixia/facenet
 
-RUN apt-get update && apt-get install \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fontconfig \
+    fontconfig-config \
     fonts-arphic-ukai \
+    fonts-dejavu-core \
+    fonts-wqy-zenhei \
+    libfontconfig1 \
     ttf-wqy-zenhei \
+    ucf \
     && rm -rf /tmp/* /var/lib/apt/lists/*
 
 RUN sudo mkdir /app/ \
