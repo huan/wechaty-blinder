@@ -34,7 +34,6 @@ USAGE
 ```
 #name abcde Tom
 #name abcde
-#name abcde
 ```
 
 1. `#similar <id> <name>`
