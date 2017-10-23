@@ -2,7 +2,7 @@ import {
   log,
 }                 from './config'
 
-// import blinder    from './blinder'
+import blinder    from './blinder'
 import wechaty    from './wechaty'
 
 export class Brain {
@@ -23,7 +23,7 @@ export class Brain {
 
     log.info('Brain', 'start() blinder is initializing, please wait... (need 20 to 200 seconds before initialized)')
     const timeStart = Date.now()
-    // await blinder.init()
+    await blinder.init()
     const duration = (Date.now() - timeStart) / 1000
     log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
