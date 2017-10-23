@@ -1,4 +1,7 @@
-FROM zixia/facenet
+FROM tensorflow/tensorflow:latest-gpu-py3
+MAINTAINER Huan LI <zixia@zixia.net>
+
+ENV LC_ALL C.UTF-8
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     fontconfig \
