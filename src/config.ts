@@ -13,7 +13,7 @@ import {
   config,
 }                     from 'wechaty'
 
-const dirList = []
+const dirList = [] as string[]
 
 if (config.token) {
   dirList.concat([
