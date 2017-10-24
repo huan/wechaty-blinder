@@ -37,10 +37,10 @@
   },
   "dependencies": {
     "app-root-path": "^2.0.1",
-    "brolog": "^1.2.8",
-    "face-blinder": "^0.0.12",
-    "finis": "0.0.3",
+    "brolog": "*",
+    "face-blinder": "*",
+    "finis": "*",
     "qrcode-terminal": "^0.11.0",
-    "wechaty": "^0.10.6"
+    "wechaty": "*"
   }
 }
