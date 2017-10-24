@@ -1,3 +1,5 @@
+import * as path from 'path'
+
 import {
   config,
   IoClient,
@@ -5,8 +7,14 @@ import {
   Wechaty,
 }             from 'wechaty'
 
+import {
+  WORKDIR,
+}             from './config'
+
+const profile = path.join(WORKDIR, 'wechaty-blinder')
+
 export const wechaty = Wechaty.instance({
-  profile: 'blinder',
+  profile,
 })
 
 const token = config.token

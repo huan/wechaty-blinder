@@ -16,15 +16,11 @@ import {
 const dirList = [] as string[]
 
 if (config.token) {
-  dirList.concat([
-    '/workdir',
-    config.token,
-  ])
+  dirList.push('/workdir')
+  dirList.push(config.token)
 } else {
-  dirList.concat([
-    APP_ROOT,
-    'workdir',
-  ])
+  dirList.push(APP_ROOT)
+  dirList.push('workdir')
 }
 
 export const WORKDIR = path.join.apply(null, dirList)
