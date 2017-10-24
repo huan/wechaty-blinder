@@ -17,7 +17,7 @@ const dirList = []
 
 if (config.token) {
   dirList.concat([
-    '/workdir', 
+    '/workdir',
     config.token,
   ])
 } else {
