@@ -13,10 +13,18 @@ import {
   config,
 }                     from 'wechaty'
 
-const dirList = ['/workdir']
+const dirList = []
 
 if (config.token) {
-  dirList.push(config.token)
+  dirList.concat([
+    '/workdir', 
+    config.token,
+  ])
+} else {
+  dirList.concat([
+    APP_ROOT,
+    'workdir',
+  ])
 }
 
 export const WORKDIR = path.join.apply(null, dirList)
