@@ -1,27 +1,66 @@
 FROM tensorflow/tensorflow:latest-gpu-py3
-MAINTAINER Huan LI <zixia@zixia.net>
+LABEL maintainer="Huan LI <zixia@zixia.net>"
 
-ENV LC_ALL C.UTF-8
+ENV DEBIAN_FRONTEND     noninteractive
+ENV LC_ALL              C.UTF-8
+ENV NODE_ENV            $NODE_ENV
+ENV NPM_CONFIG_LOGLEVEL warn
 
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    fontconfig \
-    fontconfig-config \
-    fonts-arphic-ukai \
-    fonts-dejavu-core \
-    fonts-wqy-zenhei \
-    libfontconfig1 \
-    ttf-wqy-zenhei \
-    ucf \
-    && rm -rf /tmp/* /var/lib/apt/lists/*
+      bash \
+      build-essential \
+      ca-certificates \
+      curl \
+      fontconfig \
+      fontconfig-config \
+      fonts-arphic-ukai \
+      fonts-dejavu-core \
+      fonts-wqy-zenhei \
+      git \
+      jq \
+      libcairo2-dev \
+      libfontconfig1 \
+      libgif-dev \
+      libjpeg8-dev \
+      libpango1.0-dev \
+      moreutils \
+      nodejs \
+      python2.7 \
+      python3-venv \
+      sudo \
+      ttf-freefont \
+      ttf-wqy-zenhei \
+      ucf \
+      wget \
+      vim \
+    && rm -rf /tmp/* /var/lib/apt/lists/* \
+    && apt-get purge --auto-remove
 
-RUN sudo mkdir /app/ \
-    && sudo chown -R bot:bot /app/
-WORKDIR /app/
+# https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md
+# https://github.com/ebidel/try-puppeteer/blob/master/backend/Dockerfile
+# Install latest chrome dev package.
+# Note: this also installs the necessary libs so we don't need the previous RUN command.
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-unstable \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get purge --auto-remove
 
-ENV NODE_ENV $NODE_ENV
+RUN groupadd -r bot && useradd -r -g bot -d /bot -m -G audio,video,sudo bot \
+    && mkdir -p /bot/Downloads \
+    && chown -R bot:bot /bot \
+    && echo "bot   ALL=NOPASSWD:ALL" >> /etc/sudoers
+
+# Run user as non privileged.
+USER    bot
+WORKDIR /bot/
+
 
 COPY package.json .
-RUN npm install && npm cache clean && rm -fr /tmp/* ~/.npm
+RUN npm install && rm -fr /tmp/* ~/.npm
 COPY . .
 
 CMD [ "npm", "start" ]
