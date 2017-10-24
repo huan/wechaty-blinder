@@ -148,9 +148,10 @@ async function onMediaMessage(
   const topic = room.topic()
   if (  /facenet/i.test(topic)
       && message.type() === MsgType.IMAGE
-      // && !message.self()
-      && !heater.overheat()
   ) {
+    if (message.self() && heater.overheat()) {
+      return
+    }
     const absFilePath = await mediaFile(message)
     await onImage.call(this, absFilePath, message)
   }
@@ -173,7 +174,7 @@ async function onImage(
   log.verbose('Listener', '(message) onImage() blinder.see() got %d faces', faceList.length)
 
   for (let i = 0; i < faceList.length; i++) {
-    if (i > 3) {
+    if (i > 5) {
       break
     }
     // await message.say(`Similar faces of ${faceList[i].md5}:`)
