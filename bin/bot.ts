@@ -15,13 +15,13 @@ async function main(): Promise<number> {
   // logWechaty.level('verbose')
   // logHotImport.level('verbose')
   log.level('verbose')
-  log.verbose('Main', 'main()')
+  log.info('Bot', 'main()')
 
   const brain = new Brain()
   try {
     await brain.start()
   } catch (e) {
-    log.error('Main', e)
+    log.error('Bot', e)
     return 1
   } finally {
     await brain.stop()

@@ -54,11 +54,11 @@ export = async function (
   const room    = message.room()
   const sender  = message.from()
 
-  log.info('Listener', '(message) %s%s:%s',
-                        sender,
-                        room ? room : '',
-                        message,
-          )
+  // log.info('Listener', '(message) %s%s:%s',
+  //                       sender,
+  //                       room ? room : '',
+  //                       message,
+  //         )
 
   if (room) {
     try {
@@ -75,7 +75,7 @@ async function onRoomMessage(
   room    : Room,
   message : Message | MediaMessage,
 ): Promise<void> {
-  log.verbose('Listener', '(message) onRoomMessage(%s, %s)', room, message)
+  log.silly('Listener', '(message) onRoomMessage(%s, %s)', room, message)
   // console.log(message instanceof MediaMessage)
   if (message instanceof MediaMessage) {
     // console.log('???')
