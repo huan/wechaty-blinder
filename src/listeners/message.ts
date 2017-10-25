@@ -52,7 +52,7 @@ export = async function (
 ): Promise<void> {
 
   const room    = message.room()
-  const sender  = message.from()
+  // const sender  = message.from()
 
   // log.info('Listener', '(message) %s%s:%s',
   //                       sender,
