@@ -260,7 +260,9 @@ async function mediaFile(message: MediaMessage): Promise<string> {
 }
 
 async function avatarFile(contact: Contact): Promise<string> {
-  const name = contact.name()
+  let name = contact.name() || 'BLINDER-NONAME'
+  name = name.replace(path.sep, '-')
+
   log.verbose('Listener', '(message) avatarFile(%s)', name)
 
   const filePath = path.join(
