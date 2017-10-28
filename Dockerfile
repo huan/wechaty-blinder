@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-gpu-py3
+FROM node:8
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
 ENV DEBIAN_FRONTEND     noninteractive
