@@ -1,4 +1,4 @@
-FROM node:8
+FROM ubuntu:17.10
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
 ENV DEBIAN_FRONTEND     noninteractive
@@ -6,7 +6,6 @@ ENV LC_ALL              C.UTF-8
 ENV NODE_ENV            $NODE_ENV
 ENV NPM_CONFIG_LOGLEVEL warn
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bash \
       build-essential \
@@ -25,7 +24,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libjpeg8-dev \
       libpango1.0-dev \
       moreutils \
-      nodejs \
       python2.7 \
       python3-venv \
       sudo \
@@ -34,6 +32,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ucf \
       wget \
       vim \
+    && rm -rf /tmp/* /var/lib/apt/lists/* \
+    && apt-get purge --auto-remove
+
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    && apt-get update && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /tmp/* /var/lib/apt/lists/* \
     && apt-get purge --auto-remove
 
