@@ -22,7 +22,7 @@ export const wechaty = Wechaty.instance({
 
 const token = config.token
 if (token) {
-  log.verbose('Wechaty', 'TOKEN: %s', token)
+  log.info('Wechaty', 'TOKEN: %s', token)
   const client = new IoClient({
     token,
     wechaty,
