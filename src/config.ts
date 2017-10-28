@@ -31,7 +31,7 @@ if (config.token && fs.existsSync(path.resolve(path.sep, WORKDIR_NAME))) {
 }
 
 export const WORKDIR = path.join.apply(null, dirList)
-log.verbose('Config', 'WORKDIR=%s', WORKDIR)
+log.info('Config', 'WORKDIR=%s', WORKDIR)
 
 // path.join(
 //   APP_ROOT,

@@ -16,7 +16,9 @@ async function main(): Promise<number> {
   // logWechaty.level('verbose')
   // logHotImport.level('verbose')
   log.level('verbose')
-  log.info('Bot', `main() wechaty-blinder v${VERSION}`)
+
+  log.info('WechatyBlinder', `v${VERSION}`)
+  log.info('Bot', 'main()')
 
   const brain = new Brain()
   try {
