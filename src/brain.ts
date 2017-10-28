@@ -12,7 +12,7 @@ export class Brain {
   }
 
   public async start(): Promise<void> {
-    log.verbose('Brain', 'start()')
+    log.info('Brain', `start()`)
 
     wechaty
     .on('scan',     './listeners/scan')

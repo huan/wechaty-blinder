@@ -28,10 +28,11 @@
     , "dist/"
   ]
   , "include": [
-       "bin/*.ts"
-     , "examples/**/*.ts"
-     , "index.ts"
-     , "src/**/*.ts"
-     , "tests/**/*.spec.ts"
+      "typings.d.ts"
+    , "bin/*.ts"
+    , "examples/**/*.ts"
+    , "index.ts"
+    , "src/**/*.ts"
+    , "tests/**/*.spec.ts"
   ]
 }

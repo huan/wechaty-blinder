@@ -1,10 +1,6 @@
 import * as fs    from 'fs'
 import * as path  from 'path'
 
-import Brolog from 'brolog'
-export const log = new Brolog()
-log.level('silly')
-
 import {
   path as APP_ROOT,
 }                     from 'app-root-path'
@@ -13,17 +9,29 @@ import {
   config,
 }                     from 'wechaty'
 
-const dirList = [] as string[]
+/**
+ * LOG
+ */
+import Brolog from 'brolog'
+export const log = new Brolog()
+log.level('verbose')
 
-if (config.token) {
-  dirList.push('/workdir')
+/**
+ * WORKDIR
+ */
+const dirList = [] as string[]
+const WORKDIR_NAME = 'workdir'
+if (config.token && fs.existsSync(path.resolve(path.sep, WORKDIR_NAME))) {
+  dirList.push(path.sep)  // root
+  dirList.push(WORKDIR_NAME)
   dirList.push(config.token)
 } else {
   dirList.push(APP_ROOT)
-  dirList.push('workdir')
+  dirList.push(WORKDIR_NAME)
 }
 
 export const WORKDIR = path.join.apply(null, dirList)
+log.verbose('Config', 'WORKDIR=%s', WORKDIR)
 
 // path.join(
 //   APP_ROOT,
@@ -33,3 +41,9 @@ export const WORKDIR = path.join.apply(null, dirList)
 if (!fs.existsSync(WORKDIR)) {
   fs.mkdirSync(WORKDIR)
 }
+
+/**
+ * VERSION
+ */
+import { version }  from '../package.json'
+export const VERSION = version

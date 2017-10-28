@@ -3,13 +3,16 @@ import * as path from 'path'
 import {
   config,
   IoClient,
-  log,
+  // log as wechatyLog,
   Wechaty,
 }             from 'wechaty'
 
 import {
+  log,
   WORKDIR,
 }             from './config'
+
+// wechatyLog.level(log.level())
 
 const profile = path.join(WORKDIR, 'wechaty-blinder')
 
@@ -32,5 +35,7 @@ if (token) {
 } else {
   log.verbose('Wechaty', 'TOKEN: N/A')
 }
+
+log.info('Wechaty', `v${wechaty.version()}`)
 
 export default wechaty
