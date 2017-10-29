@@ -45,5 +45,5 @@ if (!fs.existsSync(WORKDIR)) {
 /**
  * VERSION
  */
-import { version }  from '../package.json'
-export const VERSION = version
+import * as readPkgUp from 'read-pkg-up'
+export const VERSION = readPkgUp.sync().pkg.version
