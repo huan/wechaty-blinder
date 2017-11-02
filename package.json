@@ -38,10 +38,10 @@
   },
   "dependencies": {
     "app-root-path": "^2.0",
-    "brolog": "^1.2.8",
-    "face-blinder": "^0.1.9",
-    "finis": "^0.2.0",
-    "read-pkg-up": "^2.0.0",
-    "wechaty": "^0.12.2"
+    "brolog": "^1.2",
+    "face-blinder": "^0.1",
+    "finis": "^0.2",
+    "read-pkg-up": "^2.0",
+    "wechaty": "^0.12"
   }
 }
