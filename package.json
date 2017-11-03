@@ -1,6 +1,6 @@
 {
   "name": "wechaty-blinder",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Face Blinder Bot Powered by Wechaty",
   "main": "index.js",
   "scripts": {
