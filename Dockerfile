@@ -1,4 +1,4 @@
-FROM zixia/wechaty
+FROM zixia/facenet
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
 RUN sudo apt-get update \
@@ -10,6 +10,7 @@ RUN sudo apt-get update \
       fonts-dejavu-core \
       fonts-wqy-zenhei \
       git \
+      jq \
       libcairo2-dev \
       libfontconfig1 \
       libgif-dev \
@@ -24,14 +25,17 @@ RUN sudo apt-get update \
     && sudo rm -rf /tmp/* /var/lib/apt/lists/* \
     && sudo apt-get purge --auto-remove
 
-RUN sudo mkdir /workdir \
-    && sudo chown -R bot:bot /workdir
+RUN [ -e /workdir ] || sudo mkdir /workdir \
+  && sudo chown -R "$(id -nu)":"$(id -ng)" /workdir
 VOLUME /workdir
 
-WORKDIR /bot
+RUN [ -e /blinder ] || sudo mkdir /blinder \
+  && sudo chown -R "$(id -nu)":"$(id -ng)" /blinder
+  
+WORKDIR /blinder
 COPY package.json .
-RUN sudo chown bot package.json \
-    && jq 'del(.dependencies.wechaty)' package.json | sponge package.json \
+RUN sudo chown "$(id -nu)" package.json \
+    && jq 'del(.dependencies.facenet)' package.json | sponge package.json \
     && npm install \
     && rm -fr /tmp/* ~/.npm
 
