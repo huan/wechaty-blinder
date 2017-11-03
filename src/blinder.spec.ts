@@ -9,4 +9,5 @@ import blinder  from './blinder'
 
 test('blinder', async t => {
   t.ok(blinder.version(), 'should init blinder')
+  await blinder.quit()
 })
