@@ -1,6 +1,8 @@
 FROM zixia/facenet
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
+ENV USER "$(id -nu)"
+
 RUN sudo apt-get update \
     && sudo apt-get install -y --no-install-recommends \
       build-essential \
@@ -29,24 +31,25 @@ RUN sudo apt-get update \
 # https://github.com/ebidel/try-puppeteer/blob/master/backend/Dockerfile
 # Install latest chrome dev package.
 # Note: this also installs the necessary libs so we don't need the previous RUN command.
-RUN curl -sL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update && apt-get install -y --no-install-recommends \
+RUN curl -sL https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - \
+    && sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && sudo apt-get update \
+    && sudo apt-get install -y --no-install-recommends \
       google-chrome-unstable \
-    && rm -rf /usr/bin/google-chrome* /opt/google/chrome-unstable \
-    && apt-get purge --auto-remove \
-    && rm -rf /tmp/* /var/lib/apt/lists/*
+    && sudo rm -rf /usr/bin/google-chrome* /opt/google/chrome* \
+    && sudo apt-get purge --auto-remove \
+    && sudo rm -rf /tmp/* /var/lib/apt/lists/*
 
 RUN [ -e /workdir ] || sudo mkdir /workdir \
-  && sudo chown -R "$(id -nu)":"$(id -ng)" /workdir
+  && sudo chown -R "$USER" /workdir
 VOLUME /workdir
 
 RUN [ -e /blinder ] || sudo mkdir /blinder \
-  && sudo chown -R "$(id -nu)":"$(id -ng)" /blinder
+  && sudo chown -R "$USER" /blinder
 
 WORKDIR /blinder
 COPY package.json .
-RUN sudo chown "$(id -nu)" package.json \
+RUN sudo chown "$USER" package.json \
     && jq 'del(.dependencies.facenet)' package.json | sponge package.json \
     && npm install \
     && rm -fr /tmp/* ~/.npm
