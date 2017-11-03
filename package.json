@@ -43,6 +43,6 @@
     "facenet": "^0.5.2",
     "finis": "^0.2.0",
     "read-pkg-up": "^2.0.0",
-    "wechaty": "^0.12.0"
+    "wechaty": "^0.13.9"
   }
 }
