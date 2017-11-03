@@ -1,0 +1,38 @@
+matrix:
+  include:
+    - os: linux
+
+language: node_js
+node_js:
+  - "8"
+
+cache:
+  directories:
+    - node_modules
+
+before_install: # switch to python 3.5
+  - source ~/virtualenv/python3.5/bin/activate
+
+install:
+  - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+  - npm install --unsafe-perm
+
+script:
+  - echo $TRAVIS_OS_NAME
+  - python3 --version
+  - node --version
+  - npm --version
+  - npm run test
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+  webhooks:
+    urls:
+      - https://registry.hub.docker.com/u/zixia/wechaty-blinder/trigger/d6076235-aab9-4bd1-a95a-20bce2ce7482/
+    on_success: always # default: always
+    on_failure: never
+    on_start: never
+    on_cancel: never
+    on_error: never
