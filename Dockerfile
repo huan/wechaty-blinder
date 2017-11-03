@@ -22,6 +22,9 @@ RUN sudo apt-get update \
       ttf-freefont \
       ttf-wqy-zenhei \
       ucf \
+    && sudo locale-gen C C.UTF-8 \
+    && sudo dpkg-reconfigure locales \
+    && sudo update-locale LANG=C \
     && sudo rm -rf /tmp/* /var/lib/apt/lists/* \
     && sudo apt-get purge --auto-remove
 
