@@ -28,11 +28,10 @@ notifications:
   email:
     on_success: change
     on_failure: change
-  webhooks:
-    urls:
-      - https://registry.hub.docker.com/u/zixia/wechaty-blinder/trigger/d6076235-aab9-4bd1-a95a-20bce2ce7482/
-    on_success: always # default: always
-    on_failure: never
     on_start: never
     on_cancel: never
     on_error: never
+
+deploy:
+  - provider: script
+    script: curl -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
