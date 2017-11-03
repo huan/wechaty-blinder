@@ -1,13 +1,13 @@
 {
   "name": "wechaty-blinder",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "description": "Face Blinder Bot Powered by Wechaty",
   "main": "index.js",
   "scripts": {
     "clean": "shx rm -fr dist/*",
     "lint": "tslint --version && tslint --project tsconfig.json \"{src,test}/**/*.ts\" --exclude \"test/fixture/**\" --exclude \"dist/\" && npm run clean && tsc --noEmit",
     "start": "ts-node bin/bot",
-    "test": "blue-tape -r source-map-support/register echo \"Error: no test specified\" && exit 0"
+    "test": "blue-tape -r ts-node/register -r source-map-support/register \"src/**/*.spec.ts\" \"tests/**/*.spec.ts\""
   },
   "repository": {
     "type": "git",
@@ -34,11 +34,11 @@
     "shx": "^0.2.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.0"
+    "typescript": "^2.6.1"
   },
   "dependencies": {
     "app-root-path": "^2.0.0",
-    "brolog": "^1.2.0",
+    "brolog": "^1.2.8",
     "face-blinder": "^0.2.0",
     "facenet": "^0.5.2",
     "finis": "^0.2.0",
