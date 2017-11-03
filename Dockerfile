@@ -11,6 +11,8 @@ RUN sudo apt-get update \
       fonts-wqy-zenhei \
       git \
       jq \
+      language-pack-en-base \
+      language-pack-zh-hans \
       libcairo2-dev \
       libfontconfig1 \
       libgif-dev \
