@@ -17,7 +17,10 @@ const workdir = path.join(
   WORKDIR,
   'face-blinder',
 )
+const minSize = 160
+
 export const blinder = new FaceBlinder({
+  minSize,
   workdir,
 })
 
