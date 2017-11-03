@@ -28,8 +28,7 @@
     , "dist/"
   ]
   , "include": [
-      "typings.d.ts"
-    , "bin/*.ts"
+      "bin/*.ts"
     , "examples/**/*.ts"
     , "index.ts"
     , "src/**/*.ts"
