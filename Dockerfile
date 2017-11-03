@@ -30,9 +30,11 @@ VOLUME /workdir
 
 WORKDIR /bot
 COPY package.json .
-RUN sed -i'.bak' '/"wechaty": "/d' package.json \
+RUN sudo chown bot package.json \
+    && jq 'del(.dependencies.wechaty)' package.json | sponge package.json \
     && npm install \
     && rm -fr /tmp/* ~/.npm
+
 COPY . .
 
 CMD [ "npm", "start" ]

@@ -63,3 +63,4 @@ t.*
 /face-blinder.workdir/
 /*.wechaty.json
 /workdir/
+*.bak
