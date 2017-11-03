@@ -35,3 +35,5 @@ notifications:
 deploy:
   - provider: script
     script: curl -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
+    on:
+      branch: master
