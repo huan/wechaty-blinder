@@ -1,8 +1,6 @@
 FROM zixia/facenet
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
-ENV USER "$(id -nu)"
-
 RUN sudo apt-get update \
     && sudo apt-get install -y --no-install-recommends \
       build-essential \
@@ -41,15 +39,15 @@ RUN curl -sL https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-ke
     && sudo rm -rf /tmp/* /var/lib/apt/lists/*
 
 RUN [ -e /workdir ] || sudo mkdir /workdir \
-  && sudo chown -R "$USER" /workdir
+  && sudo chown -R "$(id -nu)" /workdir
 VOLUME /workdir
 
 RUN [ -e /blinder ] || sudo mkdir /blinder \
-  && sudo chown -R "$USER" /blinder
+  && sudo chown -R "$(id -nu)" /blinder
 
 WORKDIR /blinder
 COPY package.json .
-RUN sudo chown "$USER" package.json \
+RUN sudo chown "$(id -nu)" package.json \
     && jq 'del(.dependencies.facenet)' package.json | sponge package.json \
     && npm install \
     && rm -fr /tmp/* ~/.npm
