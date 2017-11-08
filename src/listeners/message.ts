@@ -86,8 +86,8 @@ async function onRoomMessage(
     return onMediaMessage.call(this, room, message)
   } else {  // message instance of Message
     const content = message.content()
-    if (/^#\w{3,}/i.test(content)) {
-      const regex = /^#(\w{3,})\s*([^\n]*)$/
+    if (/^[#/]\w{3,}/i.test(content)) {
+      const regex = /^[#/](\w{3,})\s*([^\n]*)$/
       const matches = regex.exec(content)
       // console.log(matches)
       if (matches) {
@@ -356,9 +356,9 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   }
   ctx.putImageData(imageData, 0, 0)
 
-  const recognizedName = await blinder.recognize(profileFace) || '不认识'
+  const recognizedName = await blinder.recognize(profileFace) || 'Name me!'
 
-  ctx.font         = 'bold 40px sans-serif'
+  ctx.font         = 'bold 30px sans-serif'
   ctx.fillStyle    = '#333'
   ctx.strokeStyle  = '#333'
   ctx.textBaseline = 'middle'
