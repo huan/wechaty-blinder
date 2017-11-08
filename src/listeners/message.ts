@@ -415,20 +415,41 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     height - (SIZE + PADDING),
   )
 
-  const footer = [
-    'Face Recognization Powered by: Facenet',
-    'Wechat Bot SDK Powered by: Wechaty',
-    'Blinder Powered by: FaceBlinder',
-  ].join('\n')
-
-  ctx.font         = '14px sans-serif'
   ctx.fillStyle    = '#333'
   ctx.textBaseline = 'middle'
+
+  ctx.font = '14px sans-serif'
+  ctx.fillText(
+    '© 2017 Huan',
+    0 + 10,
+    height - (SIZE + PADDING) + 100,
+  )
+
+  const footer = [
+    'Blinder Powered by: FaceBlinder',
+    'Wechat Bot SDK Powered by: Wechaty',
+    'Face Recognization Powered by: Facenet',
+  ].join('\n')
+
+  ctx.font = '9px sans-serif'
   ctx.fillText(
     footer,
     0 + 10,
-    height - (SIZE + PADDING) + 30,
+    height - (SIZE + PADDING) + 120,
   )
+
+  ctx.font         = '30px sans-serif'
+  ctx.fillText(
+    'WechatyBlinder',
+    0 + 10,
+    height - (SIZE + PADDING) + 35,
+  )
+  
+  // ctx.fillText(
+  //   'Blinder',
+  //   0 + 10,
+  //   height - (SIZE + PADDING) + 60,
+  // )
 
   /**
    * Save to file
