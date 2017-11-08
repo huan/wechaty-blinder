@@ -422,7 +422,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillText(
     '© 2017 Huan',
     0 + 10,
-    height - (SIZE + PADDING) + 100,
+    height - (SIZE + PADDING) + 105,
   )
 
   const footer = [
@@ -444,7 +444,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     0 + 10,
     height - (SIZE + PADDING) + 35,
   )
-  
+
   // ctx.fillText(
   //   'Blinder',
   //   0 + 10,
