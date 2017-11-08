@@ -325,7 +325,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   }
 
   const width = SIZE * 3
-  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3) + 1)
+  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3) + 1) - PADDING
   // const height = (SIZE + PADDING) * 4 // 1 row for profile + 2 row for face + 1 row for qrcode
 
   /**
@@ -339,6 +339,15 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle = '#ddd'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+  // Header
+  // ctx.fillStyle = '#eee'
+  // ctx.fillRect(0, 0, canvas.width, SIZE + PADDING)
+
+  // Footer
+  // ctx.fillStyle = '#eee'
+  // ctx.fillRect(0, canvas.height - SIZE, canvas.width, canvas.height)
+
+
   /**
    * Profile Face
    */
@@ -350,11 +359,13 @@ async function collages(faceList: Face[], file: string): Promise<void> {
 
   const recognizedName = await blinder.recognize(profileFace) || '不认识'
 
-  ctx.font         = 'bold 48px sans-serif'
+  ctx.font         = 'bold 44px sans-serif'
   ctx.fillStyle    = '#333'
   ctx.strokeStyle  = '#333'
   ctx.textBaseline = 'middle'
-  ctx.fillText(recognizedName, SIZE + 10, SIZE / 2)
+  ctx.textAlign    = 'center'
+  ctx.fillText(recognizedName, SIZE * 2, SIZE / 2)
+  ctx.textAlign    = 'start'
 
   let id = profileFace.md5.substr(0, 5)
   let name = await blinder.remember(profileFace) || ''
@@ -412,7 +423,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.putImageData(
     imageData,
     SIZE * 2,
-    height - (SIZE + PADDING),
+    height - SIZE,
   )
 
   ctx.fillStyle    = '#333'
@@ -422,7 +433,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillText(
     '© 2017 Huan',
     0 + 10,
-    height - (SIZE + PADDING) + 105,
+    height - SIZE + 105,
   )
 
   const footer = [
@@ -435,14 +446,14 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillText(
     footer,
     0 + 10,
-    height - (SIZE + PADDING) + 120,
+    height - SIZE + 120,
   )
 
-  ctx.font         = '30px sans-serif'
+  ctx.font = 'bold 30px sans-serif'
   ctx.fillText(
     'WechatyBlinder',
     0 + 10,
-    height - (SIZE + PADDING) + 35,
+    height - SIZE + 35,
   )
 
   // ctx.fillText(
