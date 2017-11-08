@@ -313,14 +313,14 @@ async function collages(faceList: Face[], file: string): Promise<void> {
                           faceList.length, file)
   const SIZE    = 160
   const PADDING = 20
-  const MAX_FACE_NUM = 12
+  const MAX_FACE_NUM = 6
 
   const profileFace = faceList.shift()
   if (!profileFace) {
     throw new Error('should return a blank picture for no face')
   }
 
-  if (faceList.length > 6) {
+  if (faceList.length > MAX_FACE_NUM) {
     faceList = faceList.slice(0, MAX_FACE_NUM)
   }
 
