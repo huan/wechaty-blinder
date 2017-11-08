@@ -347,7 +347,6 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   // ctx.fillStyle = '#eee'
   // ctx.fillRect(0, canvas.height - SIZE, canvas.width, canvas.height)
 
-
   /**
    * Profile Face
    */
@@ -359,7 +358,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
 
   const recognizedName = await blinder.recognize(profileFace) || '不认识'
 
-  ctx.font         = 'bold 44px sans-serif'
+  ctx.font         = 'bold 40px sans-serif'
   ctx.fillStyle    = '#333'
   ctx.strokeStyle  = '#333'
   ctx.textBaseline = 'middle'
