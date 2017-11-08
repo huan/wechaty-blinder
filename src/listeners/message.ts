@@ -12,11 +12,15 @@ import {
 import {
   createCanvas,
   Face,
+  loadImage,
+  imageToData,
   resizeImage,
   saveImage,
 }                   from 'face-blinder'
 
 import {
+  FACENET_SECRET,
+  GITHUB_URL_QRCODE,
   log,
   WORKDIR,
 }               from '../config'
@@ -143,10 +147,10 @@ async function onMediaMessage(
   room    : Room,
   message : MediaMessage,
 ): Promise<void> {
-  log.verbose('Listener', '(message) onMediaMessage(%s)', message)
-
   const topic = room.topic()
-  if (  /facenet/i.test(topic)
+  log.verbose('Listener', '(message) onMediaMessage(%s, %s)', topic, message)
+
+  if (  topic.includes(FACENET_SECRET)
       && message.type() === MsgType.IMAGE
   ) {
     if (message.self() && heater.overheat()) {
@@ -316,12 +320,13 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     throw new Error('should return a blank picture for no face')
   }
 
-  if (faceList.length > 12) {
+  if (faceList.length > 6) {
     faceList = faceList.slice(0, MAX_FACE_NUM)
   }
 
   const width = SIZE * 3
-  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3))
+  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3) + 1)
+  // const height = (SIZE + PADDING) * 4 // 1 row for profile + 2 row for face + 1 row for qrcode
 
   /**
    * Init Canvas
@@ -363,7 +368,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   )
 
   /**
-   * Other Faces
+   * Similar Faces
    */
   let row, col
   for (let i = 0; i < faceList.length; i++) {
@@ -395,6 +400,39 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     )
   }
 
+  /**
+   * QR Code
+   */
+  const qrImage = await loadImage(GITHUB_URL_QRCODE)
+  imageData = imageToData(qrImage)
+
+  if (imageData.width !== SIZE) {
+    imageData = await resizeImage(imageData, SIZE, SIZE)
+  }
+  ctx.putImageData(
+    imageData,
+    SIZE * 2,
+    height - (SIZE + PADDING),
+  )
+
+  const footer = [
+    'Face Recognization Powered by: Facenet',
+    'Wechat Bot SDK Powered by: Wechaty',
+    'Blinder Powered by: FaceBlinder',
+  ].join('\n')
+
+  ctx.font         = '14px sans-serif'
+  ctx.fillStyle    = '#333'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(
+    footer,
+    0 + 10,
+    height - (SIZE + PADDING) + 30,
+  )
+
+  /**
+   * Save to file
+   */
   imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   await saveImage(imageData, file)
 }

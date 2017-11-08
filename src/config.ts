@@ -47,3 +47,13 @@ if (!fs.existsSync(WORKDIR)) {
  */
 import * as readPkgUp from 'read-pkg-up'
 export const VERSION = readPkgUp.sync().pkg.version
+
+export const FACENET_SECRET = process.env['FACENET_SECRET'] || 'facenet'
+log.verbose('Config', 'FACENET_SECRET=%s', FACENET_SECRET)
+
+export const GITHUB_URL_QRCODE = path.join(
+  APP_ROOT,
+  'docs',
+  'images',
+  'github-url-qrcode.png',
+)
