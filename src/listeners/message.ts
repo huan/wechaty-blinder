@@ -362,9 +362,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle    = '#333'
   ctx.strokeStyle  = '#333'
   ctx.textBaseline = 'middle'
-  ctx.textAlign    = 'center'
-  ctx.fillText(recognizedName, SIZE * 2, SIZE / 2)
-  ctx.textAlign    = 'start'
+  ctx.fillText(recognizedName, SIZE + 20, SIZE / 2)
 
   let id = profileFace.md5.substr(0, 5)
   let name = await blinder.remember(profileFace) || ''
