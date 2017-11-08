@@ -64,3 +64,4 @@ t.*
 /*.wechaty.json
 /workdir/
 *.bak
+.DS_Store
