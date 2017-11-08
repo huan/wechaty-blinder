@@ -22,8 +22,8 @@ RUN sudo apt-get update \
       ttf-freefont \
       ttf-wqy-zenhei \
       ucf \
-    && sudo rm -rf /tmp/* /var/lib/apt/lists/* \
-    && sudo apt-get purge --auto-remove
+    && sudo apt-get purge --auto-remove \
+    && sudo rm -rf /tmp/* /var/lib/apt/lists/*
 
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md
 # https://github.com/ebidel/try-puppeteer/blob/master/backend/Dockerfile
@@ -34,9 +34,9 @@ RUN curl -sL https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-ke
     && sudo apt-get update \
     && sudo apt-get install -y --no-install-recommends \
       google-chrome-unstable \
-    && sudo rm -rf /usr/bin/google-chrome* /opt/google/chrome* \
     && sudo apt-get purge --auto-remove \
-    && sudo rm -rf /tmp/* /var/lib/apt/lists/*
+    && sudo rm -rf /tmp/* /var/lib/apt/lists/* \
+    && sudo rm -rf /usr/bin/google-chrome* /opt/google/chrome*
 
 RUN [ -e /workdir ] || sudo mkdir /workdir \
   && sudo chown -R "$(id -nu)" /workdir
