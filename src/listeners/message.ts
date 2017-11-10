@@ -170,7 +170,7 @@ async function onImage(
 
   const room = message.room() as Room
   const user = message.from()
-  
+
   const faceList = await blinder.see(absFilePath)
 
   if (!faceList.length) {
