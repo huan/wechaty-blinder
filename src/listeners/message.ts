@@ -50,7 +50,7 @@ class Heater {
 
 const heater = new Heater(10 * 1000)
 
-export = async function (
+export async function onMessage(
   this    : Wechaty,
   message : Message | MediaMessage,
 ): Promise<void> {
@@ -168,10 +168,14 @@ async function onImage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onImage(%s, %s)', absFilePath, message)
 
+  const room = message.room() as Room
+  const user = message.from()
+  
   const faceList = await blinder.see(absFilePath)
 
   if (!faceList.length) {
     log.verbose('Bot', 'no face found from blinder.see()')
+    room.say(`Sorry, I can not see any faces. Please make sure that the face in your photo is big enough(160x160 or bigger for the face).`, user)
     return
   }
 
@@ -187,6 +191,7 @@ async function onImage(
     const similarFaceList = await blinder.similar(faceList[i])
     if (!similarFaceList.length) {
       log.verbose('Listener', '(message) onImage() no face found from blinder.similar()')
+      room.say(`Sorry, I did not get any similar faces for the face in your photo. Please give me more photos of that person!`, user)
       continue
     }
 
@@ -370,7 +375,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle    = '#333'
   ctx.textBaseline = 'middle'
   ctx.fillText(
-    `${id} / ${name}`,
+    `#${id} / ${name}`,
     10,
     SIZE + PADDING / 2,
   )
@@ -395,14 +400,15 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     )
 
     id = face.md5.substr(0, 5)
-    const dist = profileFace.distance(face).toFixed(2)
+    const dist    = profileFace.distance(face)
+    const percent = dist > 1 ? 0 : (1 - dist) * 100
     name = await blinder.remember(face) || ''
 
     ctx.font         = '12px sans-serif'
     ctx.fillStyle    = '#333'
     ctx.textBaseline = 'middle'
     ctx.fillText(
-      `${id} / ${dist} / ${name}`,
+      `#${id} / ${percent.toFixed(0)}% / ${name}`,
       col * SIZE + 10,
       (row + 1 + 1) * (SIZE + PADDING) - PADDING / 2,
     )
@@ -465,3 +471,5 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   await saveImage(imageData, file)
 }
+
+export default onMessage
