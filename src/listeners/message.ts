@@ -191,7 +191,7 @@ async function onImage(
     const similarFaceList = await blinder.similar(faceList[i])
     if (!similarFaceList.length) {
       log.verbose('Listener', '(message) onImage() no face found from blinder.similar()')
-      room.say(`Sorry, I did not get any similar faces for the face in your photo. Please give me more photos of that person!`, user)
+      room.say(`It seems that I do not know this people before. Please give me more photos of that person and I can remember him/her!`, user)
       continue
     }
 
