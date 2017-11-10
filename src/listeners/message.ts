@@ -21,8 +21,8 @@ import {
 import {
   FACENET_SECRET,
   GITHUB_URL_QRCODE,
+  IMAGEDIR,
   log,
-  WORKDIR,
 }               from '../config'
 import blinder  from '../blinder'
 
@@ -196,8 +196,8 @@ async function onImage(
     }
 
     const filePath = path.join(
-      WORKDIR,
-      (Math.random() + Math.random()).toString(36).substr(2) + '.png',
+      IMAGEDIR,
+      'collages-' + (Math.random() + Math.random()).toString(36).substr(2) + '.png',
     )
 
     await collages([faceList[i], ...similarFaceList], filePath)
@@ -253,8 +253,8 @@ async function mediaFile(message: MediaMessage): Promise<string> {
   log.verbose('Listener', '(message) mediaFile(%s)', message.filename())
 
   const filePath = path.join(
-    WORKDIR,
-    message.filename(),
+    IMAGEDIR,
+    'media-message-' + message.filename(),
   )
   log.silly('Listener', '(message) mediaFile() ' + filePath)
 
@@ -275,8 +275,8 @@ async function avatarFile(contact: Contact): Promise<string> {
   log.verbose('Listener', '(message) avatarFile(%s)', name)
 
   const filePath = path.join(
-    WORKDIR,
-    `${name}.jpg`,
+    IMAGEDIR,
+    `avatar-${name}.jpg`,
   )
   const avatarReadStream = await contact.avatar()
   await saveStream(avatarReadStream, filePath)

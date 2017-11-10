@@ -30,17 +30,20 @@ if (config.token && fs.existsSync(path.resolve(path.sep, WORKDIR_NAME))) {
   dirList.push(WORKDIR_NAME)
 }
 
-export const WORKDIR = path.join.apply(null, dirList)
-log.info('Config', 'WORKDIR=%s', WORKDIR)
-
-// path.join(
-//   APP_ROOT,
-//   'workdir',
-// )
-
+export const WORKDIR = path.join(...dirList)
 if (!fs.existsSync(WORKDIR)) {
   fs.mkdirSync(WORKDIR)
 }
+log.info('Config', 'WORKDIR=%s', WORKDIR)
+
+export const IMAGEDIR = path.join(
+  WORKDIR,
+  'images',
+)
+if (!fs.existsSync(IMAGEDIR)) {
+  fs.mkdirSync(IMAGEDIR)
+}
+log.info('Config', 'IMAGEDIR=%s', IMAGEDIR)
 
 /**
  * VERSION
