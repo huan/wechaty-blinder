@@ -1,24 +1,21 @@
+# WechatyBlinder
+# https://github.com/zixia/wechaty-blinder
+#
 FROM zixia/facenet:0.6
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
 RUN sudo apt-get update \
     && sudo apt-get install -y --no-install-recommends \
       build-essential \
-      fontconfig \
-      fontconfig-config \
       fonts-arphic-ukai \
       fonts-dejavu-core \
       fonts-wqy-zenhei \
+      fontconfig \
+      fontconfig-config \
       git \
       jq \
-      libcairo2-dev \
       libfontconfig1 \
-      libgif-dev \
-      libjpeg8-dev \
-      libpango1.0-dev \
       moreutils \
-      python2.7 \
-      python3-venv \
       ttf-freefont \
       ttf-wqy-zenhei \
       ucf \
