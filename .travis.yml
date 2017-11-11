@@ -26,8 +26,7 @@ jobs:
         - npm test
 
     - stage: deploy
-      language": "bash"
-      os: "linux"
+      language: "bash"
       script: 
         - echo "Trigger Docker Hub Rebuild..."
         - curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
