@@ -40,7 +40,7 @@
     "app-root-path": "^2.0.0",
     "brolog": "^1.2.8",
     "face-blinder": "^0.3.1",
-    "facenet": "^0.6.0",
+    "facenet": "^0.7.2",
     "finis": "^0.2.0",
     "read-pkg-up": "^3.0.0",
     "wechaty": "^0.12.0"
