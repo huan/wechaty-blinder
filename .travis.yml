@@ -17,18 +17,15 @@ before_install: # switch to python 3.5
 
 stages:
   - test
-  - pack
   - name: deploy
     if: branch = /^(master|v\d+\.\d+)/
 
 jobs:
   include:
     - stage: deploy
-      deploy:
-        provider: script
-        script: 
-          - echo "Trigger Docker Hub Rebuild..."
-          - curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
+      script: 
+        - echo "Trigger Docker Hub Rebuild..."
+        - curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
 
 notifications:
   email:
