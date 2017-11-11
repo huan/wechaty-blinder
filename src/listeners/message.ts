@@ -242,6 +242,7 @@ async function onRoomLearnMessage(
 
   let faceNum = 0
   for (const contact of room.memberList()) {
+    await contact.refresh()
     const file = await avatarFile(contact)
     const name = contact.name()
     const faceList = await blinder.see(file)

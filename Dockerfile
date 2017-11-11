@@ -1,12 +1,13 @@
 # WechatyBlinder
 # https://github.com/zixia/wechaty-blinder
 #
-FROM zixia/facenet:0.6
+FROM zixia/facenet
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
 RUN sudo apt-get update \
     && sudo apt-get install -y --no-install-recommends \
       build-essential \
+      dumb-init \
       fonts-arphic-ukai \
       fonts-dejavu-core \
       fonts-wqy-zenhei \
@@ -51,4 +52,5 @@ RUN sudo chown "$(id -nu)" package.json \
 
 COPY . .
 
+ENTRYPOINT [ "/usr/bin/dumb-init", "--" ]
 CMD [ "npm", "start" ]

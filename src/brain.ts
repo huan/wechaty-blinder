@@ -28,11 +28,17 @@ export class Brain {
     log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
     const runner = new Promise<void>((resolve, reject) => {
-      wechaty.on('stop', resolve)
-      wechaty.on('error', reject)
+      wechaty.once('stop', resolve)
+      wechaty.once('error', reject)
+      process.once('SIGTERM', () => {
+        log.info('Bot', 'SIGTERM received')
+        wechaty.say('SIGTERM')
+        reject(new Error('SIGTERM'))
+      })
     })
 
     await wechaty.start()
+
     await runner
   }
 
