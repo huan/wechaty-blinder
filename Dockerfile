@@ -1,4 +1,4 @@
-FROM zixia/facenet
+FROM zixia/facenet:0.6
 LABEL maintainer="Huan LI <zixia@zixia.net>"
 
 RUN sudo apt-get update \
