@@ -21,8 +21,8 @@ import {
 import {
   FACENET_SECRET,
   GITHUB_URL_QRCODE,
+  IMAGEDIR,
   log,
-  WORKDIR,
 }               from '../config'
 import blinder  from '../blinder'
 
@@ -50,7 +50,7 @@ class Heater {
 
 const heater = new Heater(10 * 1000)
 
-export = async function (
+export async function onMessage(
   this    : Wechaty,
   message : Message | MediaMessage,
 ): Promise<void> {
@@ -168,10 +168,14 @@ async function onImage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onImage(%s, %s)', absFilePath, message)
 
+  const room = message.room() as Room
+  const user = message.from()
+
   const faceList = await blinder.see(absFilePath)
 
   if (!faceList.length) {
     log.verbose('Bot', 'no face found from blinder.see()')
+    room.say(`Sorry, I can not see any faces. Please make sure that the face in your photo is big enough(160x160 or bigger for the face).`, user)
     return
   }
 
@@ -187,12 +191,13 @@ async function onImage(
     const similarFaceList = await blinder.similar(faceList[i])
     if (!similarFaceList.length) {
       log.verbose('Listener', '(message) onImage() no face found from blinder.similar()')
+      room.say(`It seems that I do not know this people before. Please give me more photos of that person and I can remember him/her!`, user)
       continue
     }
 
     const filePath = path.join(
-      WORKDIR,
-      (Math.random() + Math.random()).toString(36).substr(2) + '.png',
+      IMAGEDIR,
+      'collages-' + (Math.random() + Math.random()).toString(36).substr(2) + '.png',
     )
 
     await collages([faceList[i], ...similarFaceList], filePath)
@@ -230,17 +235,26 @@ async function onRoomLearnMessage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onRoomLearnMessage(%s)', room)
 
+  await room.say(
+    `Cha! Start learning profile photos from all the members in this room.`,
+    message.from(),
+  )
+
+  let faceNum = 0
   for (const contact of room.memberList()) {
     const file = await avatarFile(contact)
     const name = contact.name()
     const faceList = await blinder.see(file)
+    faceNum += faceList.length
     for (const face of faceList) {
       await blinder.remember(face, name)
     }
   }
-  const roger = `learned # ${room.memberList().length} contacts in room ${room.topic()}`
-  await message.from().say(roger)
-  // FIXME: use a queue
+  await room.say(
+    `Der! I had finished learning ${faceNum} faces from ${room.memberList().length} profile photos in this room.`,
+    message.from(),
+  )
+  // FIXME: use a DelayQueue from rx-queue
   await Wechaty.sleep(500)
 }
 
@@ -248,8 +262,8 @@ async function mediaFile(message: MediaMessage): Promise<string> {
   log.verbose('Listener', '(message) mediaFile(%s)', message.filename())
 
   const filePath = path.join(
-    WORKDIR,
-    message.filename(),
+    IMAGEDIR,
+    'media-message-' + message.filename(),
   )
   log.silly('Listener', '(message) mediaFile() ' + filePath)
 
@@ -270,8 +284,8 @@ async function avatarFile(contact: Contact): Promise<string> {
   log.verbose('Listener', '(message) avatarFile(%s)', name)
 
   const filePath = path.join(
-    WORKDIR,
-    `${name}.jpg`,
+    IMAGEDIR,
+    `avatar-${name}.jpg`,
   )
   const avatarReadStream = await contact.avatar()
   await saveStream(avatarReadStream, filePath)
@@ -370,7 +384,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle    = '#333'
   ctx.textBaseline = 'middle'
   ctx.fillText(
-    `${id} / ${name}`,
+    `#${id} / ${name}`,
     10,
     SIZE + PADDING / 2,
   )
@@ -395,14 +409,15 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     )
 
     id = face.md5.substr(0, 5)
-    const dist = profileFace.distance(face).toFixed(2)
+    const dist    = profileFace.distance(face)
+    const percent = dist > 1 ? 0 : (1 - dist) * 100
     name = await blinder.remember(face) || ''
 
     ctx.font         = '12px sans-serif'
     ctx.fillStyle    = '#333'
     ctx.textBaseline = 'middle'
     ctx.fillText(
-      `${id} / ${dist} / ${name}`,
+      `#${id} / ${percent.toFixed(0)}% / ${name}`,
       col * SIZE + 10,
       (row + 1 + 1) * (SIZE + PADDING) - PADDING / 2,
     )
@@ -465,3 +480,5 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   await saveImage(imageData, file)
 }
+
+export default onMessage
