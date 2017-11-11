@@ -20,8 +20,9 @@ script:
 
 stages:
   - test
-  - name: deploy
-    if: branch =~ ^(master|v\d+\.\d+)
+  - deploy
+  # - name: deploy
+  #   if: branch =~ ^(master|v\d+\.\d+)
 
 jobs:
   include:
