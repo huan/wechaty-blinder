@@ -18,7 +18,7 @@ before_install: # switch to python 3.5
 stages:
   - test
   - name: deploy
-    if: branch = /^(master|v\d+\.\d+)/
+    if: branch =~ ^(master|v\d+\.\d+)
 
 jobs:
   include:
