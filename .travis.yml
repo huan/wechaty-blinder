@@ -1,6 +1,3 @@
-language: node_js
-node_js:
-  - "8"
 os: linux
 
 cache:
@@ -15,6 +12,9 @@ stages:
 jobs:
   include:
     - stage: test
+      language: node_js
+      node_js:
+        - 8
       before_install: # switch to python 3.5
         - source ~/virtualenv/python3.5/bin/activate
         - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
@@ -26,7 +26,7 @@ jobs:
         - npm test
 
     - stage: deploy
-      language: "bash"
+      language: bash
       script: 
         - echo "Trigger Docker Hub Rebuild..."
         - curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
