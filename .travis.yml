@@ -11,13 +11,6 @@ before_install: # switch to python 3.5
   - source ~/virtualenv/python3.5/bin/activate
   - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
 
-script:
-  - echo TRAVIS_OS_NAME="$TRAVIS_OS_NAME"
-  - python3 --version
-  - node --version
-  - npm --version
-  - npm test
-
 # stages:
 #   - test
 #   - pack
@@ -26,6 +19,14 @@ script:
 
 jobs:
   include:
+    - stage: test
+      script:
+        - echo TRAVIS_OS_NAME="$TRAVIS_OS_NAME"
+        - python3 --version
+        - node --version
+        - npm --version
+        - npm test
+
     - stage: pack
       script:
         - echo "Packing ..."
