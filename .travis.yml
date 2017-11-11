@@ -12,12 +12,12 @@ before_install: # switch to python 3.5
   - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
 
 script:
-  - echo $TRAVIS_OS_NAME
+  - echo TRAVIS_OS_NAME="$TRAVIS_OS_NAME"
   - python3 --version
   - node --version
   - npm --version
   - npm test
-  
+
 stages:
   - test
   - name: deploy
