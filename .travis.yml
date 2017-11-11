@@ -20,12 +20,16 @@ script:
 
 stages:
   - test
-  - deploy
-  # - name: deploy
-  #   if: branch =~ ^(master|v\d+\.\d+)
+  - pack
+  - name: deploy
+    if: branch =~ ^(master|v\d+\.\d+)
 
 jobs:
   include:
+    - stage: pack
+      script:
+        - echo "Packing ..."
+        
     - stage: deploy
       script: 
         - echo "Trigger Docker Hub Rebuild..."
