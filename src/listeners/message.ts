@@ -235,17 +235,26 @@ async function onRoomLearnMessage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onRoomLearnMessage(%s)', room)
 
+  await room.say(
+    `Cha! Start learning profile photos from all the members in this room.`,
+    message.from(),
+  )
+
+  let faceNum = 0
   for (const contact of room.memberList()) {
     const file = await avatarFile(contact)
     const name = contact.name()
     const faceList = await blinder.see(file)
+    faceNum += faceList.length
     for (const face of faceList) {
       await blinder.remember(face, name)
     }
   }
-  const roger = `learned # ${room.memberList().length} contacts in room ${room.topic()}`
-  await message.from().say(roger)
-  // FIXME: use a queue
+  await room.say(
+    `Der! I had finished learning ${faceNum} faces from ${room.memberList().length} profile photos in this room.`,
+    message.from(),
+  )
+  // FIXME: use a DelayQueue from rx-queue
   await Wechaty.sleep(500)
 }
 
