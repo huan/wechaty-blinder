@@ -51,6 +51,7 @@ RUN sudo chown "$(id -nu)" package.json \
     && rm -fr /tmp/* ~/.npm
 
 COPY . .
+RUN npm run dist
 
 ENTRYPOINT [ "/usr/bin/dumb-init", "--" ]
-CMD [ "npm", "start" ]
+CMD [ "node", "dist/bin/bot" ]
