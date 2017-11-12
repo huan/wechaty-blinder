@@ -75,13 +75,17 @@ finis(async (code, signal) => {
   const exitMsg = `Der! I'm going to offline now, see you!`
   if (wechaty.logonoff()) {
     log.info('Wechaty', 'finis() announce exiting')
-    await announce(exitMsg)
+    try {
+      await announce(exitMsg)
+    } catch (e) {
+      log.error('Wechaty', 'announce() exception: %s', e)
+    }
   } else {
     log.info('Wechaty', 'finis() bot had been already stopped')
   }
   setTimeout(async () => {
-    log.info('Wechaty', 'finis() setTimeout() going to exit with %d', code)
     try {
+      log.info('Wechaty', 'finis() setTimeout() going to exit with %d', code)
       if (wechaty.logonoff()) {
         await wechaty.stop()
       }
