@@ -4,7 +4,7 @@ import {
   FaceBlinder,
   // log as blinderLog,
 }                 from 'face-blinder'
-const finis       = require('finis')
+import finis      from 'finis'
 
 import {
   log,
@@ -24,9 +24,14 @@ export const blinder = new FaceBlinder({
   workdir,
 })
 
+let FINIS_QUITING = false
 finis(async (code, signal, error) => {
-  await blinder.quit()
+  if (FINIS_QUITING) {
+    return
+  }
+  FINIS_QUITING = true
   log.verbose('Blinder', `finis(${code}, ${signal}, ${error})`)
+  await blinder.quit()
 })
 
 log.info('FaceBlinder', `v${blinder.version()}`)

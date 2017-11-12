@@ -3,7 +3,7 @@ import {
 }                 from './config'
 
 import blinder    from './blinder'
-import wechaty    from './wechaty'
+import bot        from './wechaty'
 
 export class Brain {
 
@@ -14,7 +14,7 @@ export class Brain {
   public async start(): Promise<void> {
     log.info('Brain', `start()`)
 
-    wechaty
+    bot
     .on('scan',     './listeners/scan')
     .on('logout',   './listeners/logout')
     .on('error',    './listeners/error')
@@ -28,21 +28,16 @@ export class Brain {
     log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
     const runner = new Promise<void>((resolve, reject) => {
-      wechaty.once('stop', resolve)
-      wechaty.once('error', reject)
-      process.once('SIGTERM', () => {
-        log.info('Bot', 'SIGTERM received')
-        wechaty.say('SIGTERM')
-        reject(new Error('SIGTERM'))
-      })
+      bot.once('stop', resolve)
+      bot.once('error', reject)
     })
 
-    await wechaty.start()
+    await bot.start()
 
     await runner
   }
 
   public async stop(): Promise<void> {
-    await wechaty.stop()
+    await bot.stop()
   }
 }

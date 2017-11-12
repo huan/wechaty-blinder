@@ -1,15 +1,18 @@
 import {
+  announce,
   Contact,
   Sayable,
-}           from 'wechaty'
+}           from '../wechaty'
 
 import {
   log,
 }           from '../config'
 
-export = async function(this: Sayable, user: Contact) {
-  const msg = `${user.name()} logined`
+async function onLogin(this: Sayable, user: Contact): Promise<void> {
+  const msg = `Der! I'm online now!`
 
   log.info('Bot', msg)
-  await user.say(msg)
+  await announce(msg)
 }
+
+export default onLogin

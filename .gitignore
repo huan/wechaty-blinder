@@ -65,3 +65,4 @@ t.*
 /workdir/
 *.bak
 .DS_Store
+/dist/
