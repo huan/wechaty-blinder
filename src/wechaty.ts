@@ -10,11 +10,12 @@ import {
   Wechaty,
 }             from 'wechaty'
 
+import blinder    from './blinder'
 import {
   FACENET_SECRET,
   log,
   WORKDIR,
-}             from './config'
+}                 from './config'
 
 // wechatyLog.level(log.level())
 
@@ -53,8 +54,8 @@ export async function announce(text: string): Promise<void> {
     return
   }
 
-  if (roomList.length > 3) {
-    roomList = roomList.slice(0, 3)
+  if (roomList.length > 2) {
+    roomList = roomList.slice(0, 2)
   }
 
   for (const room of roomList) {
@@ -72,7 +73,7 @@ finis(async (code, signal) => {
   FINIS_QUITING = true
   log.info('Wechaty', 'finis(%s, %s)', code, signal)
 
-  const exitMsg = `Der! I'm going to offline now, see you!`
+  const exitMsg = `Der! I'm going to offline now, see you! WechatyBlinder v${blinder.version()}`
   if (wechaty.logonoff()) {
     log.info('Wechaty', 'finis() announce exiting')
     try {
