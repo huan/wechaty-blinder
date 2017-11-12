@@ -43,7 +43,7 @@ if (token) {
 export async function announce(text: string): Promise<void> {
   log.info('Wechaty', 'announce(%s)', text)
 
-  const topic    = FACENET_SECRET
+  const topic    = new RegExp(FACENET_SECRET, 'i')
   let   roomList = await Room.findAll({ topic })
   log.verbose('Wechaty', 'announce() got %d rooms', roomList.length)
 
