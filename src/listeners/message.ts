@@ -201,6 +201,7 @@ async function onImage(
     )
 
     await collages([faceList[i], ...similarFaceList], filePath)
+    log.info('Listener', '(message) collages(%s) done.', filePath)
 
     heater.heat()
     await message.say(new MediaMessage(filePath))
@@ -385,7 +386,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle    = '#333'
   ctx.textBaseline = 'middle'
   ctx.fillText(
-    `#${id} / ${name}`,
+    `${id} / ${name}`,
     10,
     SIZE + PADDING / 2,
   )
@@ -418,7 +419,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     ctx.fillStyle    = '#333'
     ctx.textBaseline = 'middle'
     ctx.fillText(
-      `#${id} / ${percent.toFixed(0)}% / ${name}`,
+      `${id} / ${percent.toFixed(0)}% / ${name}`,
       col * SIZE + 10,
       (row + 1 + 1) * (SIZE + PADDING) - PADDING / 2,
     )
