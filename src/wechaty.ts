@@ -73,7 +73,7 @@ finis(async (code, signal) => {
   FINIS_QUITING = true
   log.info('Wechaty', 'finis(%s, %s)', code, signal)
 
-  const exitMsg = `Der! I'm going to offline now, see you! WechatyBlinder v${blinder.version()}`
+  const exitMsg = `Der! I'm going to offline now, see you, bye! WechatyBlinder<v${blinder.version()}>`
   if (wechaty.logonoff()) {
     log.info('Wechaty', 'finis() announce exiting')
     try {
