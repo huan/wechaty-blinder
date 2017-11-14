@@ -27,6 +27,8 @@ export class Brain {
     const duration = (Date.now() - timeStart) / 1000
     log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
+    await blinder.updateEmbeddingStore()
+
     const runner = new Promise<void>((resolve, reject) => {
       bot.once('stop', resolve)
       bot.once('error', reject)
