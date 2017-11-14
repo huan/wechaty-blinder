@@ -42,7 +42,7 @@
   "dependencies": {
     "app-root-path": "^2.0.0",
     "brolog": "^1.2.8",
-    "face-blinder": "^0.5.10",
+    "face-blinder": ,
     "facenet": "^0.7.9",
     "finis": "^0.4.1",
     "read-pkg-up": "^3.0.0",
