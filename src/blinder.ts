@@ -36,4 +36,6 @@ finis(async (code, signal, error) => {
 
 log.info('FaceBlinder', `v${blinder.version()}`)
 
+blinder.updateEmbeddingStore()
+
 export default blinder
