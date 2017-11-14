@@ -44,11 +44,17 @@ RUN [ -e /blinder ] || sudo mkdir /blinder \
   && sudo chown -R "$(id -nu)" /blinder
 
 WORKDIR /blinder
+
+# for better image cache: no need to install wechaty again when we updating wechaty-blinder only.
+RUN npm init -y > /dev/null \
+  && npm install wechaty \
+  && rm -fr /tmp/* ~/.npm
+
 COPY package.json .
 RUN sudo chown "$(id -nu)" package.json \
-    && jq 'del(.dependencies.facenet)' package.json | sponge package.json \
-    && npm install \
-    && rm -fr /tmp/* ~/.npm
+  && jq 'del(.dependencies.facenet)' package.json | sponge package.json \
+  && npm install \
+  && rm -fr /tmp/* ~/.npm
 
 COPY . .
 RUN npm run dist
