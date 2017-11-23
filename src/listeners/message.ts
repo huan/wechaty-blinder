@@ -134,11 +134,11 @@ async function commandName(arg: string, message: Message): Promise<void> {
       message.say('face ' + md5 + ' name is ' + savedName)
     }
   } else {
-    const roger = [
+    const question = [
       `which md5 do you want?`,
-      ...md5List,
+      ...md5List.map(md5 => md5.substr(0, 7)),
     ].join('\n')
-    message.say(roger)
+    message.say(question)
   }
 }
 
@@ -150,8 +150,9 @@ async function onMediaMessage(
   const topic = room.topic()
   log.verbose('Listener', '(message) onMediaMessage(%s, %s)', topic, message)
 
-  if (  topic.includes(FACENET_SECRET)
-      && message.type() === MsgType.IMAGE
+  if (
+    topic.includes(FACENET_SECRET)
+    && message.type() === MsgType.IMAGE
   ) {
     if (message.self() && heater.overheat()) {
       return
