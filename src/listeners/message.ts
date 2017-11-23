@@ -12,13 +12,17 @@ import {
 import {
   createCanvas,
   Face,
+  loadImage,
+  imageToData,
   resizeImage,
   saveImage,
 }                   from 'face-blinder'
 
 import {
+  FACENET_SECRET,
+  GITHUB_URL_QRCODE,
+  IMAGEDIR,
   log,
-  WORKDIR,
 }               from '../config'
 import blinder  from '../blinder'
 
@@ -46,7 +50,7 @@ class Heater {
 
 const heater = new Heater(10 * 1000)
 
-export = async function (
+export async function onMessage(
   this    : Wechaty,
   message : Message | MediaMessage,
 ): Promise<void> {
@@ -82,8 +86,8 @@ async function onRoomMessage(
     return onMediaMessage.call(this, room, message)
   } else {  // message instance of Message
     const content = message.content()
-    if (/^#\w{3,}/i.test(content)) {
-      const regex = /^#(\w{3,})\s*([^\n]*)$/
+    if (/^[#/]\w{3,}/i.test(content)) {
+      const regex = /^[#/](\w{3,})\s*([^\n]*)$/
       const matches = regex.exec(content)
       // console.log(matches)
       if (matches) {
@@ -143,10 +147,10 @@ async function onMediaMessage(
   room    : Room,
   message : MediaMessage,
 ): Promise<void> {
-  log.verbose('Listener', '(message) onMediaMessage(%s)', message)
-
   const topic = room.topic()
-  if (  /facenet/i.test(topic)
+  log.verbose('Listener', '(message) onMediaMessage(%s, %s)', topic, message)
+
+  if (  topic.includes(FACENET_SECRET)
       && message.type() === MsgType.IMAGE
   ) {
     if (message.self() && heater.overheat()) {
@@ -164,10 +168,14 @@ async function onImage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onImage(%s, %s)', absFilePath, message)
 
+  const room = message.room() as Room
+  const user = message.from()
+
   const faceList = await blinder.see(absFilePath)
 
   if (!faceList.length) {
     log.verbose('Bot', 'no face found from blinder.see()')
+    room.say(`Sorry, I can not see any faces. Please make sure that the face in your photo is big enough(160x160 or bigger for the face).`, user)
     return
   }
 
@@ -183,15 +191,17 @@ async function onImage(
     const similarFaceList = await blinder.similar(faceList[i])
     if (!similarFaceList.length) {
       log.verbose('Listener', '(message) onImage() no face found from blinder.similar()')
+      room.say(`It seems that I do not know this people before. Please give me more photos of that person and I can remember him/her!`, user)
       continue
     }
 
     const filePath = path.join(
-      WORKDIR,
-      (Math.random() + Math.random()).toString(36).substr(2) + '.png',
+      IMAGEDIR,
+      'collages-' + (Math.random() + Math.random()).toString(36).substr(2) + '.png',
     )
 
     await collages([faceList[i], ...similarFaceList], filePath)
+    log.info('Listener', '(message) collages(%s) done.', filePath)
 
     heater.heat()
     await message.say(new MediaMessage(filePath))
@@ -226,11 +236,19 @@ async function onRoomLearnMessage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onRoomLearnMessage(%s)', room)
 
+  await room.say(
+    `Cha! Start learning profile photos from all the members in this room.`,
+    message.from(),
+  )
+
+  let faceNum = 0
   for (const contact of room.memberList()) {
     try {
+      await contact.refresh()
       const file = await avatarFile(contact)
       const name = contact.name()
       const faceList = await blinder.see(file)
+      faceNum += faceList.length
       for (const face of faceList) {
         await blinder.remember(face, name)
       }
@@ -242,9 +260,11 @@ async function onRoomLearnMessage(
                 )
     }
   }
-  const roger = `learned # ${room.memberList().length} contacts in room ${room.topic()}`
-  await message.from().say(roger)
-  // FIXME: use a queue
+  await room.say(
+    `Der! I had finished learning ${faceNum} faces from ${room.memberList().length} profile photos in this room.`,
+    message.from(),
+  )
+  // FIXME: use a DelayQueue from rx-queue
   await Wechaty.sleep(500)
 }
 
@@ -252,8 +272,8 @@ async function mediaFile(message: MediaMessage): Promise<string> {
   log.verbose('Listener', '(message) mediaFile(%s)', message.filename())
 
   const filePath = path.join(
-    WORKDIR,
-    message.filename(),
+    IMAGEDIR,
+    'media-message-' + message.filename(),
   )
   log.silly('Listener', '(message) mediaFile() ' + filePath)
 
@@ -274,8 +294,8 @@ async function avatarFile(contact: Contact): Promise<string> {
   log.verbose('Listener', '(message) avatarFile(%s)', name)
 
   const filePath = path.join(
-    WORKDIR,
-    `${name}.jpg`,
+    IMAGEDIR,
+    `avatar-${name}.jpg`,
   )
   const avatarReadStream = await contact.avatar()
   await saveStream(avatarReadStream, filePath)
@@ -317,19 +337,20 @@ async function collages(faceList: Face[], file: string): Promise<void> {
                           faceList.length, file)
   const SIZE    = 160
   const PADDING = 20
-  const MAX_FACE_NUM = 12
+  const MAX_FACE_NUM = 6
 
   const profileFace = faceList.shift()
   if (!profileFace) {
     throw new Error('should return a blank picture for no face')
   }
 
-  if (faceList.length > 12) {
+  if (faceList.length > MAX_FACE_NUM) {
     faceList = faceList.slice(0, MAX_FACE_NUM)
   }
 
   const width = SIZE * 3
-  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3))
+  const height = (SIZE + PADDING) * (1 + Math.ceil(faceList.length / 3) + 1) - PADDING
+  // const height = (SIZE + PADDING) * 4 // 1 row for profile + 2 row for face + 1 row for qrcode
 
   /**
    * Init Canvas
@@ -342,6 +363,14 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle = '#ddd'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+  // Header
+  // ctx.fillStyle = '#eee'
+  // ctx.fillRect(0, 0, canvas.width, SIZE + PADDING)
+
+  // Footer
+  // ctx.fillStyle = '#eee'
+  // ctx.fillRect(0, canvas.height - SIZE, canvas.width, canvas.height)
+
   /**
    * Profile Face
    */
@@ -351,13 +380,13 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   }
   ctx.putImageData(imageData, 0, 0)
 
-  const recognizedName = await blinder.recognize(profileFace) || '不认识'
+  const recognizedName = await blinder.recognize(profileFace) || 'Name me!'
 
-  ctx.font         = 'bold 48px sans-serif'
+  ctx.font         = 'bold 30px sans-serif'
   ctx.fillStyle    = '#333'
   ctx.strokeStyle  = '#333'
   ctx.textBaseline = 'middle'
-  ctx.fillText(recognizedName, SIZE + 10, SIZE / 2)
+  ctx.fillText(recognizedName, SIZE + 20, SIZE / 2)
 
   let id = profileFace.md5.substr(0, 5)
   let name = await blinder.remember(profileFace) || ''
@@ -371,7 +400,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   )
 
   /**
-   * Other Faces
+   * Similar Faces
    */
   let row, col
   for (let i = 0; i < faceList.length; i++) {
@@ -390,19 +419,76 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     )
 
     id = face.md5.substr(0, 5)
-    const dist = profileFace.distance(face).toFixed(2)
+    const dist    = profileFace.distance(face)
+    const percent = dist > 1 ? 0 : (1 - dist) * 100
     name = await blinder.remember(face) || ''
 
     ctx.font         = '12px sans-serif'
     ctx.fillStyle    = '#333'
     ctx.textBaseline = 'middle'
     ctx.fillText(
-      `${id} / ${dist} / ${name}`,
+      `${id} / ${percent.toFixed(0)}% / ${name}`,
       col * SIZE + 10,
       (row + 1 + 1) * (SIZE + PADDING) - PADDING / 2,
     )
   }
 
+  /**
+   * QR Code
+   */
+  const qrImage = await loadImage(GITHUB_URL_QRCODE)
+  imageData = imageToData(qrImage)
+
+  if (imageData.width !== SIZE) {
+    imageData = await resizeImage(imageData, SIZE, SIZE)
+  }
+  ctx.putImageData(
+    imageData,
+    SIZE * 2,
+    height - SIZE,
+  )
+
+  ctx.fillStyle    = '#333'
+  ctx.textBaseline = 'middle'
+
+  ctx.font = '14px sans-serif'
+  ctx.fillText(
+    '© 2017 Huan',
+    0 + 10,
+    height - SIZE + 105,
+  )
+
+  const footer = [
+    'Blinder Powered by: FaceBlinder',
+    'Wechat Bot SDK Powered by: Wechaty',
+    'Face Recognization Powered by: Facenet',
+  ].join('\n')
+
+  ctx.font = '9px sans-serif'
+  ctx.fillText(
+    footer,
+    0 + 10,
+    height - SIZE + 120,
+  )
+
+  ctx.font = 'bold 30px sans-serif'
+  ctx.fillText(
+    'WechatyBlinder',
+    0 + 10,
+    height - SIZE + 35,
+  )
+
+  // ctx.fillText(
+  //   'Blinder',
+  //   0 + 10,
+  //   height - (SIZE + PADDING) + 60,
+  // )
+
+  /**
+   * Save to file
+   */
   imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   await saveImage(imageData, file)
 }
+
+export default onMessage

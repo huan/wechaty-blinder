@@ -1,28 +1,35 @@
-matrix:
-  include:
-    - os: linux
-
-language: node_js
-node_js:
-  - "8"
+os: linux
 
 cache:
   directories:
     - node_modules
 
-before_install: # switch to python 3.5
-  - source ~/virtualenv/python3.5/bin/activate
+stages:
+  - test
+  - name: deploy
+    if: branch =~ ^(master|v\d+\.\d+)
 
-install:
-  - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
-  - npm install --unsafe-perm
+jobs:
+  include:
+    - stage: test
+      language: node_js
+      node_js:
+        - 8
+      before_install: # switch to python 3.5
+        - source ~/virtualenv/python3.5/bin/activate
+        - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+      script:
+        - echo TRAVIS_OS_NAME="$TRAVIS_OS_NAME"
+        - python3 --version
+        - node --version
+        - npm --version
+        - npm test
 
-script:
-  - echo $TRAVIS_OS_NAME
-  - python3 --version
-  - node --version
-  - npm --version
-  - npm run test
+    - stage: deploy
+      language: bash
+      script: 
+        - echo "Trigger Docker Hub Rebuild..."
+        - curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
 
 notifications:
   email:
@@ -31,9 +38,3 @@ notifications:
     on_start: never
     on_cancel: never
     on_error: never
-
-deploy:
-  - provider: script
-    script: curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
-    on:
-      branch: master

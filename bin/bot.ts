@@ -22,7 +22,9 @@ async function main(): Promise<number> {
 
   const brain = new Brain()
   try {
-    await brain.start()
+    await Promise.race([
+      brain.start(),
+    ])
   } catch (e) {
     log.error('Bot', e)
     return 1

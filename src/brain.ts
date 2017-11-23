@@ -3,7 +3,7 @@ import {
 }                 from './config'
 
 import blinder    from './blinder'
-import wechaty    from './wechaty'
+import bot        from './wechaty'
 
 export class Brain {
 
@@ -14,7 +14,7 @@ export class Brain {
   public async start(): Promise<void> {
     log.info('Brain', `start()`)
 
-    wechaty
+    bot
     .on('scan',     './listeners/scan')
     .on('logout',   './listeners/logout')
     .on('error',    './listeners/error')
@@ -27,16 +27,20 @@ export class Brain {
     const duration = (Date.now() - timeStart) / 1000
     log.info('Brain', 'start() blinder initialized, cost %s seconds', duration.toFixed(0))
 
+    // Only need to upgrade the FlashStore data when upgrade from version under v0.5.11
+    // await blinder.updateEmbeddingStore()
+
     const runner = new Promise<void>((resolve, reject) => {
-      wechaty.on('stop', resolve)
-      wechaty.on('error', reject)
+      bot.once('stop', resolve)
+      bot.once('error', reject)
     })
 
-    await wechaty.start()
+    await bot.start()
+
     await runner
   }
 
   public async stop(): Promise<void> {
-    await wechaty.stop()
+    await bot.stop()
   }
 }

@@ -30,20 +30,33 @@ if (config.token && fs.existsSync(path.resolve(path.sep, WORKDIR_NAME))) {
   dirList.push(WORKDIR_NAME)
 }
 
-export const WORKDIR = path.join.apply(null, dirList)
-log.info('Config', 'WORKDIR=%s', WORKDIR)
-
-// path.join(
-//   APP_ROOT,
-//   'workdir',
-// )
-
+export const WORKDIR = path.join(...dirList)
 if (!fs.existsSync(WORKDIR)) {
   fs.mkdirSync(WORKDIR)
 }
+log.info('Config', 'WORKDIR=%s', WORKDIR)
+
+export const IMAGEDIR = path.join(
+  WORKDIR,
+  'images',
+)
+if (!fs.existsSync(IMAGEDIR)) {
+  fs.mkdirSync(IMAGEDIR)
+}
+log.info('Config', 'IMAGEDIR=%s', IMAGEDIR)
 
 /**
  * VERSION
  */
 import * as readPkgUp from 'read-pkg-up'
 export const VERSION = readPkgUp.sync().pkg.version
+
+export const FACENET_SECRET = process.env['FACENET_SECRET'] || 'facenet'
+log.info('Config', 'FACENET_SECRET=%s', FACENET_SECRET)
+
+export const GITHUB_URL_QRCODE = path.join(
+  APP_ROOT,
+  'docs',
+  'images',
+  'github-url-qrcode.png',
+)
