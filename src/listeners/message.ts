@@ -227,11 +227,19 @@ async function onRoomLearnMessage(
   log.verbose('Listener', '(message) onRoomLearnMessage(%s)', room)
 
   for (const contact of room.memberList()) {
-    const file = await avatarFile(contact)
-    const name = contact.name()
-    const faceList = await blinder.see(file)
-    for (const face of faceList) {
-      await blinder.remember(face, name)
+    try {
+      const file = await avatarFile(contact)
+      const name = contact.name()
+      const faceList = await blinder.see(file)
+      for (const face of faceList) {
+        await blinder.remember(face, name)
+      }
+    } catch (e) {
+      log.warn('Listener', '(message) onRoomLearnMessage(%s) contact %s get avatar fail: %s',
+                            room,
+                            contact,
+                            e,
+                )
     }
   }
   const roger = `learned # ${room.memberList().length} contacts in room ${room.topic()}`
