@@ -202,6 +202,7 @@ async function onImage(
     )
 
     await collages([faceList[i], ...similarFaceList], filePath)
+    log.info('Listener', '(message) collages(%s) done.', filePath)
 
     heater.heat()
     await message.say(new MediaMessage(filePath))
@@ -243,13 +244,21 @@ async function onRoomLearnMessage(
 
   let faceNum = 0
   for (const contact of room.memberList()) {
-    await contact.refresh()
-    const file = await avatarFile(contact)
-    const name = contact.name()
-    const faceList = await blinder.see(file)
-    faceNum += faceList.length
-    for (const face of faceList) {
-      await blinder.remember(face, name)
+    try {
+      await contact.refresh()
+      const file = await avatarFile(contact)
+      const name = contact.name()
+      const faceList = await blinder.see(file)
+      faceNum += faceList.length
+      for (const face of faceList) {
+        await blinder.remember(face, name)
+      }
+    } catch (e) {
+      log.warn('Listener', '(message) onRoomLearnMessage(%s) contact %s get avatar fail: %s',
+                            room,
+                            contact,
+                            e,
+                )
     }
   }
   await room.say(
@@ -386,7 +395,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
   ctx.fillStyle    = '#333'
   ctx.textBaseline = 'middle'
   ctx.fillText(
-    `#${id} / ${name}`,
+    `${id} / ${name}`,
     10,
     SIZE + PADDING / 2,
   )
@@ -419,7 +428,7 @@ async function collages(faceList: Face[], file: string): Promise<void> {
     ctx.fillStyle    = '#333'
     ctx.textBaseline = 'middle'
     ctx.fillText(
-      `#${id} / ${percent.toFixed(0)}% / ${name}`,
+      `${id} / ${percent.toFixed(0)}% / ${name}`,
       col * SIZE + 10,
       (row + 1 + 1) * (SIZE + PADDING) - PADDING / 2,
     )
