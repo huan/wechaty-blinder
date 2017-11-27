@@ -11,8 +11,8 @@ Blinder remember faces of your Wechat contacts.
 
 Study Once, Name It Anywhere.
 
-EXAMPLE
--------
+SCREENSHOTS
+-----------
 
 Andy & Donnie | Jack Ma | Dou
  :---:  | :---: | :---:
