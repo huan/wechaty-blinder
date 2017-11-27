@@ -14,8 +14,10 @@ Study Once, Name It Anywhere.
 EXAMPLE
 -------
 
+Andy & Donnie | Jack Ma | Dou
  :---:  | :---: | :---:
 ![Andy & Donnie](https://zixia.github.io/wechaty-blinder/screenshots/andy-donnie.jpg) | ![Jack Ma](https://zixia.github.io/wechaty-blinder/screenshots/jack-ma.jpg) | ![Dou](https://zixia.github.io/wechaty-blinder/screenshots/dou.jpg)
+Dian | Orz | Error
 ![Dian Dian](https://zixia.github.io/wechaty-blinder/screenshots/diandian.jpg) | ![Orz](https://zixia.github.io/wechaty-blinder/screenshots/orz.jpg) | ![Align Error](https://zixia.github.io/wechaty-blinder/screenshots/align-error.jpg)
 
 
