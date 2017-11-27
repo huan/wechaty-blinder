@@ -11,6 +11,15 @@ Blinder remember faces of your Wechat contacts.
 
 Study Once, Name It Anywhere.
 
+EXAMPLE
+-------
+
+Wechat | Face | Blinder
+ :---:  | :---: | :---:
+![Andy & Donnie](https://zixia.github.io/wechaty-blinder/screenshots/andy-donnie.jpg) | ![Jack Ma](https://zixia.github.io/wechaty-blinder/screenshots/jack-ma.jpg) | ![Dou](https://zixia.github.io/wechaty-blinder/screenshots/dou.jpg)
+![Dian Dian](https://zixia.github.io/wechaty-blinder/screenshots/diandian.jpg) | ![Orz](https://zixia.github.io/wechaty-blinder/screenshots/orz.jpg) | ![Align Error](https://zixia.github.io/wechaty-blinder/screenshots/align-error.jpg)
+
+
 FEATURES
 --------
 
@@ -23,22 +32,8 @@ Recognize name of the face in photos.
 USAGE
 -----
 
-1. `learn <room name>`
+### Lingo
 
-```
-#learn
-#learn a group name
-```
+Blinder bot can undersome serval commands like: `/learn`, `/name`, `whois` etc.
 
-1. `#name <id> <name>`
-
-```
-#name abcde Tom
-#name abcde
-```
-
-1. `#similar <id> <name>`
-
-```
-#similar abcde
-```
+Learn more about lingos at: [Bot Lingo](https://github.com/zixia/wechaty-blinder/wiki/Lingo)
