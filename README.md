@@ -35,6 +35,6 @@ USAGE
 
 ### Lingo
 
-Blinder bot can undersome serval commands like: `/learn`, `/name`, `whois` etc.
+Blinder bot can undersome serval commands like: `/learn`, `/name`, `/whois` etc.
 
-Learn more about lingos at: [Bot Lingo](https://github.com/zixia/wechaty-blinder/wiki/Lingo)
+Learn more about Lingos at: [Bot Lingo](https://github.com/zixia/wechaty-blinder/wiki/Lingo)
