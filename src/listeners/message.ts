@@ -150,8 +150,11 @@ async function onMediaMessage(
   const topic = room.topic()
   log.verbose('Listener', '(message) onMediaMessage(%s, %s)', topic, message)
 
+  const topicMatchSecret = new RegExp(FACENET_SECRET, 'i')
+
   if (
-    topic.includes(FACENET_SECRET)
+      topicMatchSecret.test(topic)
+    // topic.includes(FACENET_SECRET)
     && message.type() === MsgType.IMAGE
   ) {
     if (message.self() && heater.overheat()) {
