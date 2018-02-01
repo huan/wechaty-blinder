@@ -14,9 +14,9 @@ jobs:
     - stage: test
       language: node_js
       node_js:
-        - 8
-      before_install: # switch to python 3.5
-        - source ~/virtualenv/python3.5/bin/activate
+        - 9
+      before_install: # switch to python 3.6
+        - source ~/virtualenv/python3.6/bin/activate
         - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
       script:
         - echo TRAVIS_OS_NAME="$TRAVIS_OS_NAME"
@@ -27,7 +27,7 @@ jobs:
 
     - stage: deploy
       language: bash
-      script: 
+      script:
         - echo "Trigger Docker Hub Rebuild..."
         - curl -s -X POST -d '{"from":"travis"}' "$DOCKER_REBUILD_URL"
 
