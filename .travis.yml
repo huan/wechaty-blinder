@@ -8,6 +8,7 @@ stages:
   - test
   - name: deploy
     if: branch =~ ^(master|v\d+\.\d+)
+        AND (type NOT IN (cron, pull_request))
 
 jobs:
   include:
