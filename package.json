@@ -46,7 +46,7 @@
     "facenet": "^0.10.1",
     "finis": "^0.4.1",
     "flash-store": "^0.4.1",
-    "numjs": "^0.15.0",
+    "numjs": "^0.16.0",
     "read-pkg-up": "^3.0.0",
     "wechaty": "^0.14.1"
   }
