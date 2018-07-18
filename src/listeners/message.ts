@@ -1,11 +1,11 @@
 import * as fs    from 'fs'
 import * as path  from 'path'
 
+import { FileBox } from 'file-box'
+
 import {
   Contact,
-  MediaMessage,
   Message,
-  MsgType,
   Room,
   Wechaty,
 }                   from 'wechaty'
@@ -52,7 +52,7 @@ const heater = new Heater(10 * 1000)
 
 export async function onMessage(
   this    : Wechaty,
-  message : Message | MediaMessage,
+  message : Message,
 ): Promise<void> {
 
   const room    = message.room()
@@ -77,11 +77,13 @@ export async function onMessage(
 async function onRoomMessage(
   this    : Wechaty,
   room    : Room,
-  message : Message | MediaMessage,
+  message : Message,
 ): Promise<void> {
   log.silly('Listener', '(message) onRoomMessage(%s, %s)', room, message)
   // console.log(message instanceof MediaMessage)
-  if (message instanceof MediaMessage) {
+  if (   message.type() !== this.Message.Type.Text
+      && message.type() !== this.Message.Type.Unknown
+  ) {
     // console.log('???')
     return onMediaMessage.call(this, room, message)
   } else {  // message instance of Message
@@ -145,9 +147,9 @@ async function commandName(arg: string, message: Message): Promise<void> {
 async function onMediaMessage(
   this    : Wechaty,
   room    : Room,
-  message : MediaMessage,
+  message : Message,
 ): Promise<void> {
-  const topic = room.topic()
+  const topic = await room.topic()
   log.verbose('Listener', '(message) onMediaMessage(%s, %s)', topic, message)
 
   const topicMatchSecret = new RegExp(FACENET_SECRET, 'i')
@@ -155,12 +157,12 @@ async function onMediaMessage(
   if (
       topicMatchSecret.test(topic)
     // topic.includes(FACENET_SECRET)
-    && message.type() === MsgType.IMAGE
+    && message.type() === this.Message.Type.Image
   ) {
     if (message.self() && heater.overheat()) {
       return
     }
-    const absFilePath = await mediaFile(message)
+    const absFilePath = await mediaFile(await message.toFileBox())
     await onImage.call(this, absFilePath, message)
   }
 }
@@ -168,12 +170,17 @@ async function onMediaMessage(
 async function onImage(
   this        : Wechaty,
   absFilePath : string,
-  message     : MediaMessage,
+  message     : Message,
 ): Promise<void> {
   log.verbose('Listener', '(message) onImage(%s, %s)', absFilePath, message)
 
   const room = message.room() as Room
   const user = message.from()
+
+  if (!user) {
+    log.verbose('Bot', 'no from user found from message')
+    return
+  }
 
   const faceList = await blinder.see(absFilePath)
 
@@ -208,7 +215,7 @@ async function onImage(
     log.info('Listener', '(message) collages(%s) done.', filePath)
 
     heater.heat()
-    await message.say(new MediaMessage(filePath))
+    await message.say(FileBox.fromFile(filePath))
     await Wechaty.sleep(1000)
 
     // for (let j = 0; j < similarFaceList.length; j++) {
@@ -240,13 +247,22 @@ async function onRoomLearnMessage(
 ): Promise<void> {
   log.verbose('Listener', '(message) onRoomLearnMessage(%s)', room)
 
+  const from = message.from()
+
+  if (!from) {
+    log.verbose('Bot', 'onRoomLearnMessage() no from user found from message')
+    return
+  }
+
   await room.say(
     `Cha! Start learning profile photos from all the members in this room.`,
-    message.from(),
+    from,
   )
 
   let faceNum = 0
-  for (const contact of room.memberList()) {
+
+  const memberList = await room.memberList()
+  for (const contact of memberList) {
     try {
       await contact.refresh()
       const file = await avatarFile(contact)
@@ -265,25 +281,24 @@ async function onRoomLearnMessage(
     }
   }
   await room.say(
-    `Der! I had finished learning ${faceNum} faces from ${room.memberList().length} profile photos in this room.`,
-    message.from(),
+    `Der! I had finished learning ${faceNum} faces from ${memberList.length} profile photos in this room.`,
+    from,
   )
   // FIXME: use a DelayQueue from rx-queue
   await Wechaty.sleep(500)
 }
 
-async function mediaFile(message: MediaMessage): Promise<string> {
-  log.verbose('Listener', '(message) mediaFile(%s)', message.filename())
+async function mediaFile(filebox: FileBox): Promise<string> {
+  log.verbose('Listener', '(message) mediaFile(%s)', filebox.name)
 
   const filePath = path.join(
     IMAGEDIR,
-    'media-message-' + message.filename(),
+    'media-message-' + filebox.name,
   )
   log.silly('Listener', '(message) mediaFile() ' + filePath)
 
   try {
-    const netStream = await message.readyStream()
-    await saveStream(netStream, filePath)
+    await filebox.toFile(filePath)
   } catch (e) {
     console.error('stream error:', e)
     throw e
@@ -301,39 +316,9 @@ async function avatarFile(contact: Contact): Promise<string> {
     IMAGEDIR,
     `avatar-${name}.jpg`,
   )
-  const avatarReadStream = await contact.avatar()
-  await saveStream(avatarReadStream, filePath)
+  const filebox = await contact.avatar()
+  await filebox.toFile(filePath)
   return filePath
-}
-
-async function saveStream(stream: NodeJS.ReadableStream, file: string, options?: string | {
-  flags?     : string | undefined,
-  encoding?  : string | undefined,
-  fd?        : number | undefined,
-  mode?      : number | undefined,
-  autoClose? : boolean | undefined,
-  start?     : number | undefined,
-} | undefined) : Promise<void> {
-  log.verbose('Listener', '(message) saveStream(_, %s)', file)
-
-  options = Object.assign({}, options)
-  const writeStream = fs.createWriteStream(file, options)
-
-  return new Promise<void>((resolve, reject) => {
-    writeStream.once('close', () => {
-      try {
-        if (fs.statSync(file).size > 0) {
-          return resolve()
-        }
-      } catch (e) {
-        return reject(e)
-      }
-      return reject(new Error(`zero size file(${file}) found!`))
-    })
-    writeStream.once('error', reject)
-    stream.once('error', reject)
-    stream.pipe(writeStream)
-  })
 }
 
 async function collages(faceList: Face[], file: string): Promise<void> {
