@@ -45,9 +45,9 @@
     "face-blinder": "^0.5.10",
     "facenet": "^0.10.1",
     "finis": "^0.4.1",
-    "flash-store": "^0.4.1",
-    "numjs": "^0.15.0",
+    "numjs": "^0.16.0",
+    "flash-store": "^0.6.1",
     "read-pkg-up": "^4.0.0",
-    "wechaty": "^0.18.1"
+    "wechaty": "^0.22.1"
   }
 }
