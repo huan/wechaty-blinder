@@ -33,11 +33,11 @@
     "@types/node": "^10.0.3",
     "blue-tape": "^1.0.0",
     "shx": "^0.3.0",
-    "sinon": "^6.0.0",
+    "sinon": "^7.1.1",
     "sinon-test": "^2.1.2",
     "ts-node": "^7.0.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.1"
+    "typescript": "^3.1.6"
   },
   "dependencies": {
     "app-root-path": "^2.0.0",
