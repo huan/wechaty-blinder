@@ -33,7 +33,7 @@ if (token) {
     wechaty,
   })
 
-  client.init().catch(e => {
+  client.start().catch(e => {
     log.error('Wechaty', 'IoClient.init() exception: %s', e)
     wechaty.emit('error', e)
   })

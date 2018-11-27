@@ -1,6 +1,6 @@
 {
   "name": "wechaty-blinder",
-  "version": "0.5.27",
+  "version": "0.5.28",
   "description": "Face Blinder Bot Powered by Wechaty",
   "main": "index.js",
   "scripts": {
@@ -33,9 +33,9 @@
     "@types/node": "^10.0.3",
     "blue-tape": "^1.0.0",
     "shx": "^0.3.0",
-    "sinon": "^5.0.0",
+    "sinon": "^6.0.0",
     "sinon-test": "^2.1.2",
-    "ts-node": "^6.0.0",
+    "ts-node": "^7.0.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1"
   },
@@ -45,9 +45,9 @@
     "face-blinder": "^0.5.10",
     "facenet": "^0.10.1",
     "finis": "^0.4.1",
-    "flash-store": "^0.4.1",
     "numjs": "^0.16.0",
-    "read-pkg-up": "^3.0.0",
-    "wechaty": "^0.14.1"
+    "flash-store": "^0.6.1",
+    "read-pkg-up": "^4.0.0",
+    "wechaty": "^0.22.1"
   }
 }
