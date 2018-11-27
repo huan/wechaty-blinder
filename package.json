@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zixia/wechaty-blinder.git"
+    "url": "git+https://github.com/huan/wechaty-blinder.git"
   },
   "keywords": [
     "Wechaty",
@@ -23,9 +23,9 @@
   "author": "Huan LI <zixia@zixia.net>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/zixia/wechaty-blinder/issues"
+    "url": "https://github.com/huan/wechaty-blinder/issues"
   },
-  "homepage": "https://github.com/zixia/wechaty-blinder#readme",
+  "homepage": "https://github.com/huan/wechaty-blinder#readme",
   "devDependencies": {
     "@types/app-root-path": "^1.0.0",
     "@types/blue-tape": "^0.1.0",
